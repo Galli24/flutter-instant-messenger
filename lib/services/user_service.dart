@@ -57,10 +57,8 @@ class UserState with ChangeNotifier {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email';
-      } else if (e.code == 'wrong-password') {
-        return 'Wrong password provided for that user.';
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        return 'Wrong email or password';
       }
     } catch (e) {
       return e;
