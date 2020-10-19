@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instant_messenger/services/login_service.dart';
+import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFFEFF6EE),
+      backgroundColor: Color(0xFFEFF6EE),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -64,9 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Color(0xFFA3F7B7),
               textColor: Color(0xFF393E46),
               onPressed: () async {
-                var _state = Provider.of<LoginState>(context, listen: false);
+                var _state = Provider.of<UserState>(context, listen: false);
                 if (_email.isNotEmpty && _password.isNotEmpty) {
-                  await _state.signInWithEmailAndPassword(_email, _password);
+                  _state.signInWithEmailAndPassword(_email, _password);
                   if (_state.isLoggedIn()) Navigator.pushNamed(context, '/');
                 }
               },

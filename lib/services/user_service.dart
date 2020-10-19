@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
-class LoginState with ChangeNotifier {
+class UserState with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   User _user;
@@ -23,23 +24,39 @@ class LoginState with ChangeNotifier {
     });
   }
 
-  Future<void> registerWithEmailAndPassword(
-      String email, String password) async {
+  Future<String> registerWithEmailAndPassword(
+      String email, String password, String firstName, String lastName) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      final User user = (await _auth.createUserWithEmailAndPassword(
+              email: email, password: password))
+          .user;
+      if (user != null) {
+        CollectionReference users =
+            FirebaseFirestore.instance.collection('users');
+
+        try {
+          await users.add({
+            'firstName': firstName,
+            'lastName': lastName,
+          });
+
+          return '';
+        } catch (e) {
+          return "Failed to add user: $e";
+        }
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        return 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        return 'The account already exists for that email.';
       }
     } catch (e) {
-      print(e);
+      return e;
     }
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
+  void signInWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
