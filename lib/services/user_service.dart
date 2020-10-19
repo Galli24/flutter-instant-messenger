@@ -24,23 +24,17 @@ class UserState with ChangeNotifier {
     });
   }
 
-  Future<String> registerWithEmailAndPassword(
-      String email, String password, String firstName, String lastName) async {
+  Future<String> registerWithEmailAndPassword(String email, String password, String firstName, String lastName) async {
     try {
-      final User user = (await _auth.createUserWithEmailAndPassword(
-              email: email, password: password))
-          .user;
+      final User user = (await _auth.createUserWithEmailAndPassword(email: email, password: password)).user;
       if (user != null) {
-        CollectionReference users =
-            FirebaseFirestore.instance.collection('users');
+        CollectionReference users = FirebaseFirestore.instance.collection('users');
 
         try {
           await users.add({
             'firstName': firstName,
             'lastName': lastName,
           });
-
-          return '';
         } catch (e) {
           return "Failed to add user: $e";
         }
@@ -54,6 +48,7 @@ class UserState with ChangeNotifier {
     } catch (e) {
       return e;
     }
+    return '';
   }
 
   void signInWithEmailAndPassword(String email, String password) async {
