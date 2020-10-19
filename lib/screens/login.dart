@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
 
+import '../constants.dart';
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -10,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _email;
   String _password;
+  String _loginErrorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
             FlatButton(
               color: Colors.transparent,
               textColor: Color(0xFF29A19C),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/register');
+              },
               child: Text(
                 "Sign Up",
               ),
@@ -66,13 +71,20 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () async {
                 var _state = Provider.of<UserState>(context, listen: false);
                 if (_email.isNotEmpty && _password.isNotEmpty) {
-                  _state.signInWithEmailAndPassword(_email, _password);
+                  var tmp = await _state.signInWithEmailAndPassword(_email, _password);
+                  setState(() {
+                    _loginErrorMessage = tmp;
+                  });
                   if (_state.isLoggedIn()) Navigator.pushNamed(context, '/');
                 }
               },
               child: Text(
                 "Sign In",
               ),
+            ),
+            Text(
+              _loginErrorMessage,
+              style: kErrorTextStyle,
             ),
           ],
         ),

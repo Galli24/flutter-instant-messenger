@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/constants.dart';
 import 'package:flutter_instant_messenger/screens/home.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
+import 'package:flutter_instant_messenger/screens/register.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +85,8 @@ class App extends StatelessWidget {
             return HomeScreen();
           else
             return LoginScreen();
-        }
+        },
+        '/register': (context) => RegisterScreen(),
       },
     );
   }

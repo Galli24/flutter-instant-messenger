@@ -7,3 +7,28 @@ final TextStyle kTextStyle = TextStyle(
   letterSpacing: 2.5,
   fontWeight: FontWeight.bold,
 );
+
+final TextStyle kWhiteTextStyle = TextStyle(
+  fontFamily: 'SourceSansPro',
+  color: Colors.white,
+  fontSize: 20,
+  letterSpacing: 2.5,
+  fontWeight: FontWeight.bold,
+);
+
+final TextStyle kBlackTextStyle = TextStyle(
+  fontFamily: 'SourceSansPro',
+  color: Colors.black,
+  fontSize: 20,
+  letterSpacing: 2.5,
+  fontWeight: FontWeight.bold,
+);
+
+
+final TextStyle kErrorTextStyle = TextStyle(
+  fontFamily: 'SourceSansPro',
+  color: Colors.red.shade600,
+  fontSize: 15,
+  letterSpacing: 2.5,
+  fontWeight: FontWeight.normal,
+);
