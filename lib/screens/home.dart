@@ -11,10 +11,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
             FlatButton(
               onPressed: () async {
                 Provider.of<UserState>(context, listen: false).signOut();
-                Navigator.pushNamed(context, '/');
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
               },
               child: Text(
                 'Log out',
