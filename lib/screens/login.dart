@@ -12,16 +12,25 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _email;
   String _password;
-  String _loginErrorMessage = '';
+  String _loginErrorMessage;
 
-  void signIn() async {
+  @override
+  void initState() {
+    super.initState();
+    _email = '';
+    _password = '';
+    _loginErrorMessage = '';
+  }
+
+  void _signIn() async {
     var _state = Provider.of<UserState>(context, listen: false);
-    if (_email != null && _password != null && _email.isNotEmpty && _password.isNotEmpty) {
-      var tmp = await _state.signInWithEmailAndPassword(_email, _password);
-      setState(() {
-        _loginErrorMessage = tmp;
-      });
-      if (_state.isLoggedIn()) Navigator.pushNamed(context, '/');
+    if (_email.isNotEmpty && _password.isNotEmpty) {
+      var tmp = await _state.signInWithEmailAndPassword(context, _email, _password);
+      if (mounted) {
+        setState(() {
+          _loginErrorMessage = tmp;
+        });
+      }
     }
   }
 
@@ -73,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) {
                       FocusScope.of(context).unfocus();
-                      signIn();
+                      _signIn();
                     }),
                 SizedBox(height: 50),
                 FlatButton(
@@ -89,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 FlatButton(
                   color: Color(0xFFA3F7B7),
                   textColor: Color(0xFF393E46),
-                  onPressed: signIn,
+                  onPressed: _signIn,
                   child: Text(
                     "Sign In",
                   ),

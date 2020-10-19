@@ -19,10 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             FlatButton(
-              onPressed: () async {
-                Provider.of<UserState>(context, listen: false).signOut();
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-              },
+              onPressed: () async => Provider.of<UserState>(context, listen: false).signOut(context),
               child: Text(
                 'Log out',
                 style: kTextStyle,

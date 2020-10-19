@@ -10,28 +10,31 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  String _mail;
+  String _email;
   String _password;
   String _firstName;
   String _lastName;
+  String _registerResult;
 
-  String _registerResult = '';
+  @override
+  void initState() {
+    super.initState();
+    _email = '';
+    _password = '';
+    _firstName = '';
+    _lastName = '';
+    _registerResult = '';
+  }
 
-  void register() async {
+  void _register() async {
     var _state = Provider.of<UserState>(context, listen: false);
-    if (_mail != null &&
-        _password != null &&
-        _firstName != null &&
-        _lastName != null &&
-        _mail.isNotEmpty &&
-        _password.isNotEmpty &&
-        _firstName.isNotEmpty &&
-        _lastName.isNotEmpty) {
-      var tmp = await _state.registerWithEmailAndPassword(_mail, _password, _firstName, _lastName);
-      setState(() {
-        _registerResult = tmp;
-      });
-      if (_state.isLoggedIn()) Navigator.pushNamed(context, '/');
+    if (_email.isNotEmpty && _password.isNotEmpty && _firstName.isNotEmpty && _lastName.isNotEmpty) {
+      var tmp = await _state.registerWithEmailAndPassword(context, _email, _password, _firstName, _lastName);
+      if (mounted) {
+        setState(() {
+          _registerResult = tmp;
+        });
+      }
     }
   }
 
@@ -56,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextField(
                     onChanged: (text) {
                       setState(() {
-                        _mail = text;
+                        _email = text;
                       });
                     },
                     decoration: InputDecoration(
@@ -110,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) {
                       FocusScope.of(context).unfocus();
-                      register();
+                      _register();
                     },
                   ),
                   Text(
@@ -120,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   FlatButton(
                     color: Color(0xFFA3F7B7),
                     textColor: Color(0xFF393E46),
-                    onPressed: register,
+                    onPressed: _register,
                     child: Text('Register'),
                   )
                 ],
