@@ -37,6 +37,6 @@ flutter:
     - assets/images/
 
   fonts:
-    - family: Source Sans Pro
+    - family: SourceSansPro
       fonts:
       - asset: assets/fonts/SourceSansPro-Regular.ttf
