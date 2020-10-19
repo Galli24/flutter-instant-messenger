@@ -33,10 +33,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/images/
+
   fonts:
-    - family: DancingScript
+    - family: Source Sans Pro
       fonts:
-      - asset: fonts/DancingScript-Regular.ttf
-    - family: Montserrat
-      fonts:
-      - asset: fonts/Montserrat-Regular.ttf
+      - asset: assets/fonts/SourceSansPro-Regular.ttf
