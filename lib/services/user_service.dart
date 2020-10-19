@@ -47,8 +47,8 @@ class UserState with ChangeNotifier {
       } else if (e.code == 'invalid-email') {
         return 'The email is invalid.';
       }
-    } catch (e) {
-      return e;
+    } on Exception catch (e) {
+      return e.toString();
     }
     return '';
   }
@@ -57,11 +57,11 @@ class UserState with ChangeNotifier {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+      if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-email') {
         return 'Wrong email or password';
       }
-    } catch (e) {
-      return e;
+    } on Exception catch (e) {
+      return e.toString();
     }
     return '';
   }
