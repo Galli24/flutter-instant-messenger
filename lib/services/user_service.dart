@@ -31,7 +31,7 @@ class UserState with ChangeNotifier {
         CollectionReference users = FirebaseFirestore.instance.collection('users');
 
         try {
-          await users.add({
+          await users.doc(user.uid).set({
             'firstName': firstName,
             'lastName': lastName,
           });
@@ -44,6 +44,8 @@ class UserState with ChangeNotifier {
         return 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
         return 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        return 'The email is invalid.';
       }
     } catch (e) {
       return e;
