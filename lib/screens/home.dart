@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instant_messenger/constants.dart';
+import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_instant_messenger/services/conversation_services.dart';
-
-import '../constants.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

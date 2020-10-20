@@ -4,6 +4,7 @@ import 'package:flutter_instant_messenger/constants.dart';
 import 'package:flutter_instant_messenger/screens/home.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
 import 'package:flutter_instant_messenger/screens/register.dart';
+import 'package:flutter_instant_messenger/services/conersation_service.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,10 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => UserState())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserState()),
+        ChangeNotifierProvider(create: (context) => ConversationState()),
+      ],
       child: FirebaseInit(),
     ),
   );
@@ -81,9 +85,10 @@ class App extends StatelessWidget {
           var state = Provider.of<UserState>(context);
           state.trackUserState();
 
-          if (state.isLoggedIn())
+          if (state.isLoggedIn()) {
+            Provider.of<ConversationState>(context).userUid = state.currentUser().uid;
             return HomeScreen();
-          else
+          } else
             return LoginScreen();
         },
         '/register': (context) => RegisterScreen(),
