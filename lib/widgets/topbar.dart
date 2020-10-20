@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_instant_messenger/services/user_service.dart';
+import 'package:provider/provider.dart';
 
 class TopBar extends AppBar {
-  TopBar()
+  TopBar(BuildContext context)
       : super(
           backgroundColor: Color(0xFFA3F7BF),
           centerTitle: true,
@@ -11,7 +13,10 @@ class TopBar extends AppBar {
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
             ),
-            IconButton(icon: Icon(Icons.account_circle_rounded), onPressed: null)
+            IconButton(icon: Icon(Icons.account_circle_rounded), onPressed: null),
+            IconButton(
+                icon: Icon(Icons.power_settings_new, color: Colors.green),
+                onPressed: () => Provider.of<UserState>(context, listen: false).signOut(context)),
           ],
         );
 }
