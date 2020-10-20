@@ -35,6 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _registerResult = tmp;
         });
       }
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     }
   }
 

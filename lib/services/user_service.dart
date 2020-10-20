@@ -30,7 +30,7 @@ class UserState with ChangeNotifier {
     String result = '';
 
     try {
-      Loader.showAlertDialog(context);
+      showAlertDialog(context);
       final User user = (await _auth.createUserWithEmailAndPassword(email: email, password: password)).user;
       if (user != null) {
         CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -40,8 +40,7 @@ class UserState with ChangeNotifier {
             'firstName': firstName,
             'lastName': lastName,
           });
-          Navigator.pop(context);
-          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+          return result;
         } catch (e) {
           result = 'Failed to add user: $e';
         }
@@ -57,7 +56,7 @@ class UserState with ChangeNotifier {
     } on Exception catch (e) {
       result = e.toString();
     }
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     return result;
   }
 
@@ -65,10 +64,9 @@ class UserState with ChangeNotifier {
     String result = '';
 
     try {
-      Loader.showAlertDialog(context);
+      showAlertDialog(context);
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.pop(context);
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      return result;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-email') {
         result = 'Wrong email or password';
@@ -76,15 +74,14 @@ class UserState with ChangeNotifier {
     } on Exception catch (e) {
       result = e.toString();
     }
-    Navigator.pop(context);
+    Navigator.of(context).pop();
     return result;
   }
 
   void signOut(BuildContext context) async {
-    Loader.showAlertDialog(context);
+    showAlertDialog(context);
     await _auth.signOut();
     _isLoggedIn = false;
     notifyListeners();
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 }

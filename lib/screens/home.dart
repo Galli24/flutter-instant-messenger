@@ -11,6 +11,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  void _signOut() {
+    Provider.of<UserState>(context, listen: false).signOut(context);
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             FlatButton(
-              onPressed: () async => Provider.of<UserState>(context, listen: false).signOut(context),
+              onPressed: _signOut,
               child: Text(
                 'Log out',
                 style: kTextStyle,
