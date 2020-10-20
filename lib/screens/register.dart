@@ -121,11 +121,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: kErrorTextStyle,
                   ),
                   FlatButton(
-                    color: Color(0xFFA3F7B7),
-                    textColor: Color(0xFF393E46),
-                    onPressed: _register,
-                    child: Text('Register'),
-                  )
+                      onPressed: _register,
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter),
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Register",
+                            style: TextStyle(
+                              fontFamily: "SourceSansPro",
+                              fontSize: 28,
+                              color: Color(0xFFEFF6EE),
+                            ),
+                          ),
+                        ),
+                      )),
                 ],
               ),
             ],
