@@ -3,34 +3,31 @@
 */
 
 class Message {
-  int receiverId;
-  int senderId;
+  String senderId;
+  DateTime time;
   String msgContent;
 
-  int get receiver => receiverId;
+  DateTime get datetime => time;
 
-  int get sender => senderId;
+  String get sender => senderId;
 
   String get content => msgContent;
 }
 
 class Conversation {
-  int firstPerson;
-  int secondPerson;
+  List<String> participants;
   List<Message> messages;
 
-  int get first => firstPerson;
-
-  int get second => secondPerson;
+  List<String> get participant => participants;
 
   List<Message> get messageList => messages;
 }
 
 class History {
-  int userId;
+  String userId;
   List<Conversation> conversations;
 
-  int get user => userId;
+  String get user => userId;
 
   List<Conversation> get conversationList => conversations;
 }
