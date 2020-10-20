@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _signIn() async {
+    _loginErrorMessage = '';
     var _state = Provider.of<UserState>(context, listen: false);
     if (_email.isNotEmpty && _password.isNotEmpty) {
       var tmp = await _state.signInWithEmailAndPassword(context, _email, _password);
@@ -92,38 +93,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   onSubmitted: (_) => _signIn(),
                 ),
                 SizedBox(height: 80),
-                FlatButton(
-                  color: Colors.transparent,
-                  textColor: Color(0xFF29A19C),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/register');
-                  },
-                  child: Text(
-                    "Sign Up",
-                  ),
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(context, '/register'),
+                  child: Text("Sign Up", style: TextStyle(color: Color(0xFF29A19C))),
                 ),
                 FlatButton(
-                    onPressed: _signIn,
-                    child: Ink(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter),
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Container(
-                        constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Sign In",
-                          style: TextStyle(
-                            fontFamily: "SourceSansPro",
-                            fontSize: 32,
-                            color: Color(0xFFEFF6EE),
-                          ),
-                        ),
+                  onPressed: _signIn,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter),
+                        borderRadius: BorderRadius.circular(30)),
+                    constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Sign In",
+                      style: TextStyle(
+                        fontFamily: "SourceSansPro",
+                        fontSize: 32,
+                        color: Color(0xFFEFF6EE),
                       ),
-                    )),
+                    ),
+                  ),
+                ),
                 Text(
                   _loginErrorMessage,
                   style: kErrorTextStyle,
