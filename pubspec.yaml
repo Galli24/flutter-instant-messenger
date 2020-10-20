@@ -40,3 +40,6 @@ flutter:
     - family: SourceSansPro
       fonts:
       - asset: assets/fonts/SourceSansPro-Regular.ttf
+    - family: SourceSansProItalic
+      fonts:
+      - asset: assets/fonts/SourceSansPro-Italic.ttf

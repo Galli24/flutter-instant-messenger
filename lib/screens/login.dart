@@ -47,9 +47,18 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 CircleAvatar(
-                  radius: 50,
+                  radius: 90,
                   backgroundImage: AssetImage('assets/images/aerogrow_logo.jpg'),
                   backgroundColor: Colors.transparent,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "AeroGrow",
+                  style: TextStyle(fontFamily: "SourceSansPro", fontSize: 52),
+                ),
+                Text(
+                  "Messaging App",
+                  style: TextStyle(fontFamily: "SourceSansProItalic", fontSize: 18),
                 ),
                 SizedBox(height: 20),
                 TextField(
@@ -84,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       FocusScope.of(context).unfocus();
                       _signIn();
                     }),
-                SizedBox(height: 50),
+                SizedBox(height: 80),
                 FlatButton(
                   color: Colors.transparent,
                   textColor: Color(0xFF29A19C),
@@ -96,13 +105,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 FlatButton(
-                  color: Color(0xFFA3F7B7),
-                  textColor: Color(0xFF393E46),
-                  onPressed: _signIn,
-                  child: Text(
-                    "Sign In",
-                  ),
-                ),
+                    onPressed: _signIn,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter),
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Sign In",
+                          style: TextStyle(
+                            fontFamily: "SourceSansPro",
+                            fontSize: 32,
+                            color: Color(0xFFEFF6EE),
+                          ),
+                        ),
+                      ),
+                    )),
                 Text(
                   _loginErrorMessage,
                   style: kErrorTextStyle,
