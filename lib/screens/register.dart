@@ -35,7 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _registerResult = tmp;
         });
       }
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      if (_state.isLoggedIn()) Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     }
   }
 
@@ -43,6 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color(0xFFA3F7B7),
         iconTheme: IconThemeData(
@@ -69,7 +70,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: "Enter your e-mail",
                         labelText: 'Email'),
                     textInputAction: TextInputAction.next,
-                    onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                   ),
                   TextField(
                     onChanged: (text) {
@@ -84,7 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: "Enter your password",
                         labelText: 'Password'),
                     textInputAction: TextInputAction.next,
-                    onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                   ),
                   TextField(
                     onChanged: (text) {
@@ -98,7 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: "Enter your first name",
                         labelText: 'First name'),
                     textInputAction: TextInputAction.next,
-                    onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                   ),
                   TextField(
                     onChanged: (text) {
@@ -112,10 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: "Enter your last name",
                         labelText: 'Last name'),
                     textInputAction: TextInputAction.done,
-                    onSubmitted: (_) {
-                      FocusScope.of(context).unfocus();
-                      _register();
-                    },
+                    onSubmitted: (_) => _register(),
                   ),
                   Text(
                     _registerResult,

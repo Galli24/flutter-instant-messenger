@@ -10,8 +10,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _globalScaffoldKey = GlobalKey<ScaffoldState>();
-
   String _email;
   String _password;
   String _loginErrorMessage;
@@ -27,22 +25,21 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signIn() async {
     var _state = Provider.of<UserState>(context, listen: false);
     if (_email.isNotEmpty && _password.isNotEmpty) {
-      var tmp = await _state.signInWithEmailAndPassword(_globalScaffoldKey.currentContext, _email, _password);
+      var tmp = await _state.signInWithEmailAndPassword(context, _email, _password);
       if (mounted) {
         setState(() {
           _loginErrorMessage = tmp;
         });
       }
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      if (_state.isLoggedIn()) Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _globalScaffoldKey,
       backgroundColor: Color(0xFFEFF6EE),
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: ListView(
           children: <Widget>[
@@ -77,26 +74,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: "Enter your email",
                       labelText: "Email"),
                   textInputAction: TextInputAction.next,
-                  onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                 ),
                 SizedBox(height: 20),
                 TextField(
-                    onChanged: (text) {
-                      setState(() {
-                        _password = text;
-                      });
-                    },
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        //floatingLabelBehavior: FloatingLabelBehavior.always,
-                        hintText: "Enter your password",
-                        labelText: 'Password'),
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: (_) {
-                      FocusScope.of(context).unfocus();
-                      _signIn();
-                    }),
+                  onChanged: (text) {
+                    setState(() {
+                      _password = text;
+                    });
+                  },
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      //floatingLabelBehavior: FloatingLabelBehavior.always,
+                      hintText: "Enter your password",
+                      labelText: 'Password'),
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _signIn(),
+                ),
                 SizedBox(height: 80),
                 FlatButton(
                   color: Colors.transparent,
