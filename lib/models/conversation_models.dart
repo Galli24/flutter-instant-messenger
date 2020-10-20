@@ -54,7 +54,6 @@ class Conversation {
   String toString() {
     String result = 'id: ' + _id + '\nparticipants: ' + _participants.toString() + '\nmessages: ';
     for (Message message in messageList) result += '\n' + message.toString();
-
     return result;
   }
 
@@ -71,6 +70,13 @@ class Conversation {
 class History {
   final List<Conversation> _conversations;
   List<Conversation> get conversationList => _conversations;
+
+  @override
+  String toString() {
+    String result = 'big dick data ';
+    for (Conversation conversation in _conversations) result += '\n' + conversation.toString();
+    return result;
+  }
 
   History.fromSnapshot(QuerySnapshot snapshot) : _conversations = new List<Conversation>() {
     for (QueryDocumentSnapshot documentSnapshot in snapshot.docs) {
