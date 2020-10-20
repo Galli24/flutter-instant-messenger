@@ -9,18 +9,38 @@ class UserState with ChangeNotifier {
   User _user;
   bool _isLoggedIn = false;
 
+  bool _userInitiatedAction = false;
+  bool _userInitiatedSignOut = false;
+
   bool isLoggedIn() => _isLoggedIn;
   User currentUser() => _user;
 
   void trackUserState() {
     _auth.authStateChanges().listen((User user) {
-      if (user == null) {
-        _isLoggedIn = false;
-        notifyListeners();
-      } else {
+      if (user != null && _user == null) {
+        // Sign in
         _user = user;
         _isLoggedIn = true;
-        notifyListeners();
+        print('Sign in, user initiated: $_userInitiatedAction');
+        if (!_userInitiatedAction)
+          notifyListeners();
+        else
+          _userInitiatedAction = false;
+      } else if (user == null && _user != null) {
+        // Sign out
+        _user = null;
+        _isLoggedIn = false;
+        print('Sign out, user initiated: $_userInitiatedSignOut');
+        if (!_userInitiatedSignOut)
+          notifyListeners();
+        else
+          _userInitiatedSignOut = false;
+      } else if (user != null && _user != null && user.uid != _user.uid) {
+        // User change, should not happen
+        print('User change');
+      } else if (user != null && _user != null && user.uid == _user.uid) {
+        // Token refresh
+        print('Token refresh');
       }
     });
   }
@@ -31,6 +51,7 @@ class UserState with ChangeNotifier {
 
     try {
       showAlertDialog(context);
+      _userInitiatedAction = true;
       final User user = (await _auth.createUserWithEmailAndPassword(email: email, password: password)).user;
       if (user != null) {
         CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -56,7 +77,7 @@ class UserState with ChangeNotifier {
     } on Exception catch (e) {
       result = e.toString();
     }
-    Navigator.of(context).pop();
+    Navigator.pop(context);
     return result;
   }
 
@@ -65,6 +86,7 @@ class UserState with ChangeNotifier {
 
     try {
       showAlertDialog(context);
+      _userInitiatedAction = true;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return result;
     } on FirebaseAuthException catch (e) {
@@ -74,14 +96,16 @@ class UserState with ChangeNotifier {
     } on Exception catch (e) {
       result = e.toString();
     }
-    Navigator.of(context).pop();
+    Navigator.pop(context);
     return result;
   }
 
   void signOut(BuildContext context) async {
+    _userInitiatedSignOut = true;
     showAlertDialog(context);
     await _auth.signOut();
+    _user = null;
     _isLoggedIn = false;
-    notifyListeners();
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 }
