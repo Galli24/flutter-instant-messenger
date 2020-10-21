@@ -92,7 +92,6 @@ class _AppState extends State<App> {
         '/': (BuildContext context) {
           var state = Provider.of<UserState>(context, listen: true);
           if (state.isLoggedIn()) {
-            Provider.of<ConversationState>(context, listen: false).userUid = state.currentUser().uid;
             return HomeScreen();
           } else {
             Provider.of<ConversationState>(context, listen: false).userUid = '';
