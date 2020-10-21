@@ -8,9 +8,7 @@ class UserState with ChangeNotifier {
 
   User _user;
   bool _isLoggedIn = false;
-
   bool _userInitiatedAction = false;
-  bool _userInitiatedSignOut = false;
 
   bool isLoggedIn() => _isLoggedIn;
   User currentUser() => _user;
@@ -30,11 +28,11 @@ class UserState with ChangeNotifier {
         // Sign out
         _user = null;
         _isLoggedIn = false;
-        print('Sign out, user initiated: $_userInitiatedSignOut');
-        if (!_userInitiatedSignOut)
+        print('Sign out, user initiated: $_userInitiatedAction');
+        if (!_userInitiatedAction)
           notifyListeners();
         else
-          _userInitiatedSignOut = false;
+          _userInitiatedAction = false;
       } else if (user != null && _user != null && user.uid != _user.uid) {
         // User change, should not happen
         print('User change');
@@ -101,7 +99,7 @@ class UserState with ChangeNotifier {
   }
 
   void signOut(BuildContext context) async {
-    _userInitiatedSignOut = true;
+    _userInitiatedAction = true;
     showAlertDialog(context);
     await _auth.signOut();
     _user = null;
