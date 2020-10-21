@@ -64,12 +64,15 @@ class Conversation {
     for (Map<dynamic, dynamic> message in snapshot['messages'] as List<dynamic>) {
       _messages.add(Message.fromMap(message));
     }
+    _messages.sort((message1, message2) => message1.datetime.compareTo(message2.datetime));
   }
 }
 
 class History {
   final List<Conversation> _conversations;
   List<Conversation> get conversationList => _conversations;
+
+  History() : _conversations = new List<Conversation>();
 
   @override
   String toString() {
@@ -82,5 +85,7 @@ class History {
     for (QueryDocumentSnapshot documentSnapshot in snapshot.docs) {
       _conversations.add(Conversation.fromSnapshot(documentSnapshot));
     }
+    _conversations.sort((conversation1, conversation2) =>
+        conversation2.messageList.last.datetime.compareTo(conversation1.messageList.last.datetime));
   }
 }
