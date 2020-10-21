@@ -23,6 +23,7 @@ dependencies:
   geolocator: ^6.0.0
   http: ^0.12.2
 
+  intl: ^0.16.1 
   provider: ^4.3.2+2
 
   cupertino_icons: ^0.1.3
