@@ -52,7 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: InkWell(
-                        onTap: null,
+                        onTap: ()
+                        {
+                          Navigator.pushNamed(context, '/conversation');
+                        },
                         child: Column(
                           children: <Widget>[
                             ClipRRect(
