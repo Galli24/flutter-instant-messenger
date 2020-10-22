@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_instant_messenger/screens/profile.dart';
 
 class TopBar extends AppBar {
   TopBar(BuildContext context)
@@ -17,10 +16,7 @@ class TopBar extends AppBar {
             IconButton(
                 icon: Icon(Icons.account_circle_rounded),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen()),
-                  );
+                  Navigator.pushNamed(context, 'profile');
                 }),
             IconButton(
                 icon: Icon(Icons.power_settings_new, color: Colors.green),
