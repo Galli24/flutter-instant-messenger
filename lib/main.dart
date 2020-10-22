@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/constants.dart';
-import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/screens/converstion.dart';
 import 'package:flutter_instant_messenger/screens/home.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
@@ -103,7 +102,7 @@ class _AppState extends State<App> {
         },
         '/register': (context) => RegisterScreen(),
         '/profile': (context) => ProfileScreen(),
-        '/conversation': (BuildContext context) => ConversationScreen(ModalRoute.of(context).settings.arguments[0], ModalRoute.of(context).settings.arguments[1]),
+        '/conversation': (BuildContext context) => ConversationScreen(ModalRoute.of(context).settings.arguments),
       },
     );
   }

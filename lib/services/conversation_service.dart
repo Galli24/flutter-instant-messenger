@@ -52,7 +52,11 @@ class ConversationState with ChangeNotifier {
     try {
       CollectionReference convColRef = _firestore.collection('conversations');
       convColRef.add({
-        "messages": FieldValue.arrayUnion([message])
+        "messages": FieldValue.arrayUnion([message]),
+        "participants": List.from([
+          _userUid,
+          participantUid,
+        ]),
       });
       return true;
     } catch (e) {
@@ -65,7 +69,7 @@ class ConversationState with ChangeNotifier {
     try {
       DocumentReference conversationRef = _firestore.collection('conversations').doc(conversationId);
       conversationRef.update({
-        "messages": FieldValue.arrayUnion([message])
+        'messages': FieldValue.arrayUnion([message])
       });
       return true;
     } catch (e) {
