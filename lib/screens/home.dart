@@ -52,10 +52,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: InkWell(
-                        onTap: ()
-                        {
-                          Navigator.pushNamed(context, '/conversation');
-                        },
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          '/conversation',
+                          arguments: {
+                            'conversationUid': state.history.conversationList[index].id,
+                            'userModel': snapshot.data as UserModel
+                          },
+                        ),
                         child: Column(
                           children: <Widget>[
                             ClipRRect(
