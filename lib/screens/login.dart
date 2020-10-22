@@ -97,26 +97,35 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () => Navigator.pushNamed(context, '/register'),
                   child: Text("Sign Up", style: TextStyle(color: Color(0xFF29A19C))),
                 ),
-                FlatButton(
-                  onPressed: _signIn,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Container(
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
+                  child: Ink(
+                    width: 200,
+                    height: 60,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter),
-                        borderRadius: BorderRadius.circular(30)),
-                    constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Sign In",
-                      style: TextStyle(
-                        fontFamily: "SourceSansPro",
-                        fontSize: 32,
-                        color: Color(0xFFEFF6EE),
+                      gradient: LinearGradient(
+                          colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: InkWell(
+                      onTap: _signIn,
+                      customBorder: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
+                        ),
+                      ),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Sign In",
+                          style: TextStyle(
+                            fontFamily: "SourceSansPro",
+                            fontSize: 32,
+                            color: Color(0xFFEFF6EE),
+                          ),
+                        ),
                       ),
                     ),
                   ),
