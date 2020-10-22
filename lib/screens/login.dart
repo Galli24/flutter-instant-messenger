@@ -39,8 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Color(0xFFEFF6EE),
-      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: ListView(
           children: <Widget>[
