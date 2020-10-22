@@ -12,17 +12,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ConversationState convState;
+
   @override
   void initState() {
-    var state = Provider.of<ConversationState>(context, listen: false);
-    state.userUid = Provider.of<UserState>(context, listen: false).currentUser().uid;
-    state.trackMessageHistory();
+    convState = Provider.of<ConversationState>(context, listen: false);
+    convState.userUid = Provider.of<UserState>(context, listen: false).currentUser().uid;
+    convState.trackMessageHistory();
     super.initState();
   }
 
   @override
   void dispose() {
-    Provider.of<ConversationState>(context, listen: false).stopTrackingMessageHistory();
+    convState.stopTrackingMessageHistory();
     super.dispose();
   }
 
