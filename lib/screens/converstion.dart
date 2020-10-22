@@ -3,6 +3,8 @@ import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:provider/provider.dart';
 
+import '../constants.dart';
+
 class ConversationScreen extends StatefulWidget {
   final Map data;
 
@@ -27,9 +29,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
   Widget build(BuildContext context) {
     var convService = Provider.of<ConversationState>(context, listen: false);
 
-    return SafeArea(
-      child: Container(
-        color: Colors.red[200],
+    return Scaffold(
+      backgroundColor: Color(0xFFEFF6EE),
+      appBar: AppBar(
+        backgroundColor: Color(0xFFA3F7BF),
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text(_userModel.fullName, style: kBlackTextStyle),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Text('Test'),
       ),
     );
   }
