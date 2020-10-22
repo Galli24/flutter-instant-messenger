@@ -4,6 +4,7 @@ import 'package:flutter_instant_messenger/constants.dart';
 import 'package:flutter_instant_messenger/screens/home.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
 import 'package:flutter_instant_messenger/screens/register.dart';
+import 'package:flutter_instant_messenger/screens/profile.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:provider/provider.dart';
@@ -99,6 +100,7 @@ class _AppState extends State<App> {
           }
         },
         '/register': (context) => RegisterScreen(),
+        '/profile': (context) => ProfileScreen(),
       },
     );
   }
