@@ -16,7 +16,7 @@ class TopBar extends AppBar {
             IconButton(
                 icon: Icon(Icons.account_circle_rounded),
                 onPressed: () {
-                  Navigator.pushNamed(context, 'profile');
+                  Navigator.pushNamed(context, '/profile');
                 }),
             IconButton(
                 icon: Icon(Icons.power_settings_new, color: Colors.green),
