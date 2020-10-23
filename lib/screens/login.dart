@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: ListView(
           children: <Widget>[
-            SizedBox(height: 80),
+            SizedBox(height: 10),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       labelText: "Email"),
                   textInputAction: TextInputAction.next,
                 ),
-                SizedBox(height: 20),
+                //SizedBox(height: 20),
                 TextField(
                   onChanged: (text) => setState(() => _password = text),
                   obscureText: true,
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) => _signIn(),
                 ),
-                SizedBox(height: 80),
+                SizedBox(height: 20),
                 TextButton(
                   onPressed: () => Navigator.pushNamed(context, '/register'),
                   child: Text("Sign Up", style: TextStyle(color: Color(0xFF29A19C))),
@@ -89,8 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 200, minHeight: 60),
                   child: Ink(
-                    width: 200,
-                    height: 60,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                           colors: [Color(0xFFA3F7B7), Color(0xFF29A19C)],
