@@ -98,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             Padding(
                                               padding: const EdgeInsets.only(right: 10),
                                               child: Text(
-                                                DateFormat('H:mm - d MMM').format(state
-                                                    .history.conversationList[index].messageList.last.datetime
+                                                DateFormat('d MMM - H:mm').format(state
+                                                    .history.conversationList[index].messageList.first.datetime
                                                     .toLocal()),
                                                 style: TextStyle(
                                                   fontFamily: "SourceSansPro",

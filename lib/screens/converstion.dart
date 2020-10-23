@@ -78,19 +78,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                   children: [
                                     Text(
                                       conv.messageList[index].content,
-                                      style: TextStyle(
-                                        fontFamily: "SourceSansPro",
-                                        fontSize: 24,
-                                        color: Color(0xFFEFF6EE),
-                                      ),
+                                      style: kConversationMessage,
                                     ),
                                     Text(
-                                      DateFormat('H:mm').format(conv.messageList[index].datetime.toLocal()),
-                                      style: TextStyle(
-                                        fontFamily: "SourceSansPro",
-                                        fontSize: 16,
-                                        color: Color(0xFFEFF6EE),
-                                      ),
+                                      DateFormat('d MMM - H:mm').format(conv.messageList[index].datetime.toLocal()),
+                                      style: kConversationDate,
                                       textAlign: TextAlign.right,
                                     ),
                                   ],
