@@ -14,7 +14,7 @@ class TopBar extends AppBar {
               padding: const EdgeInsets.only(right: 12.0),
             ),
             IconButton(
-                icon: Icon(Icons.account_circle_rounded),
+                icon: Icon(Icons.account_circle_rounded, color: Color(0xFF29A19C)),
                 onPressed: () {
                   Navigator.pushNamed(context, '/profile');
                 }),
