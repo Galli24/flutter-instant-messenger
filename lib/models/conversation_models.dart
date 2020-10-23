@@ -64,7 +64,7 @@ class Conversation {
     for (Map<dynamic, dynamic> message in snapshot['messages'] as List<dynamic>) {
       _messages.add(Message.fromMap(message));
     }
-    _messages.sort((message1, message2) => message1.datetime.compareTo(message2.datetime));
+    _messages.sort((message1, message2) => message2.datetime.compareTo(message1.datetime));
   }
 }
 
