@@ -39,11 +39,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
     var padding = MediaQuery.of(context).size.width * 0.10;
 
     return sender == _userService.currentUser().uid
-        ? EdgeInsets.fromLTRB(5, 0, padding, 0)
-        : EdgeInsets.fromLTRB(padding, 0, 5, 0);
+        ? EdgeInsets.fromLTRB(padding, 0, 5, 0)
+        : EdgeInsets.fromLTRB(5, 0, padding, 0);
   }
 
-  Color getCardColor(String sender) => sender == _userService.currentUser().uid ? Color(0xFFCFD7E4) : Color(0xFFA3F7BF);
+  Color getCardColor(String sender) => sender == _userService.currentUser().uid ? Color(0xFFA3F7BF) : Color(0xFFCFD7E4);
 
   @override
   Widget build(BuildContext context) {
@@ -75,39 +75,39 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       itemBuilder: (context, index) {
                         var msg = conv.messageList[index];
                         return Container(
-                        child: Padding(
-                          padding: getCardPadding(msg.sender),
-                          child: Card(
-                            color: getCardColor(msg.sender),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                          child: Padding(
+                            padding: getCardPadding(msg.sender),
+                            child: Card(
+                              color: getCardColor(msg.sender),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          msg.content,
+                                          style: kConversationMessage,
+                                        ),
+                                        Text(
+                                          DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                          style: kConversationDate,
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text(
-                                        msg.content,
-                                        style: kConversationMessage,
-                                      ),
-                                      Text(
-                                        DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                        style: kConversationDate,
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
                           ),
-                        ),
-                      );
+                        );
                       },
                     );
                   },
