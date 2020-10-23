@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ class ConversationScreen extends StatefulWidget {
 class _ConversationScreenState extends State<ConversationScreen> {
   String _conversationUid;
   UserModel _userModel;
+  ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
@@ -38,7 +40,88 @@ class _ConversationScreenState extends State<ConversationScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Text('Test'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ListView.builder(
+                reverse: true,
+                scrollDirection: Axis.vertical,
+                controller: _scrollController,
+                itemCount: 20,
+                itemBuilder: (context, index) => Container(
+                  child: Card(
+                    color: Color(0xFF393E46),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Test',
+                                          style: TextStyle(
+                                            fontFamily: "SourceSansPro",
+                                            fontSize: 24,
+                                            color: Color(0xFFEFF6EE),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 10),
+                                          child: Text(
+                                            'Time',
+                                            style: TextStyle(
+                                              fontFamily: "SourceSansPro",
+                                              fontSize: 16,
+                                              color: Color(0xFFEFF6EE),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Enter message',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
