@@ -22,7 +22,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   UserModel _userModel;
   ScrollController _scrollController = new ScrollController();
 
-  String _text;
   TextEditingController _textEditingController = new TextEditingController();
   UserState _userService;
 
@@ -30,7 +29,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void initState() {
     _conversationUid = widget.data['conversationUid'];
     _userModel = widget.data['userModel'];
-    _text = '';
     _userService = Provider.of<UserState>(context, listen: false);
     super.initState();
   }
@@ -126,17 +124,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       decoration: InputDecoration(
                         hintText: 'Enter message',
                       ),
-                      onChanged: (text) {
-                        setState(() {
-                          _text = text;
-                        });
-                      },
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) {
-                        setState(() => _text = _text.trim());
-                        if (_text.isEmpty) return;
-                        convService.sendTextMessageToConversation(_conversationUid, _text);
-                        setState(() => _text = '');
+                      textInputAction: TextInputAction.send,
+                      onEditingComplete: () {
+                        if (_textEditingController.text.isEmpty) return;
+                        convService.sendTextMessageToConversation(_conversationUid, _textEditingController.text);
                         _textEditingController.clear();
                       },
                     ),

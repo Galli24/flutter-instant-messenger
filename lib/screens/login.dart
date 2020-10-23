@@ -27,11 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
     var _state = Provider.of<UserState>(context, listen: false);
     if (_email.isNotEmpty && _password.isNotEmpty) {
       var tmp = await _state.signInWithEmailAndPassword(context, _email, _password);
-      if (mounted) {
-        setState(() {
-          _loginErrorMessage = tmp;
-        });
-      }
+
+      if (mounted) setState(() => _loginErrorMessage = tmp);
       if (_state.isLoggedIn()) Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
     }
   }
@@ -64,11 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 TextField(
-                  onChanged: (text) {
-                    setState(() {
-                      _email = text;
-                    });
-                  },
+                  onChanged: (text) => setState(() => _email = text),
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       //floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -78,11 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 TextField(
-                  onChanged: (text) {
-                    setState(() {
-                      _password = text;
-                    });
-                  },
+                  onChanged: (text) => setState(() => _password = text),
                   obscureText: true,
                   decoration: InputDecoration(
                       border: InputBorder.none,

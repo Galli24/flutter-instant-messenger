@@ -59,11 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Column(
                 children: <Widget>[
                   TextField(
-                    onChanged: (text) {
-                      setState(() {
-                        _email = text;
-                      });
-                    },
+                    onChanged: (text) => setState(() => _email = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -72,11 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextField(
-                    onChanged: (text) {
-                      setState(() {
-                        _password = text;
-                      });
-                    },
+                    onChanged: (text) => setState(() => _password = text),
                     obscureText: true,
                     decoration: InputDecoration(
                         border: InputBorder.none,
@@ -86,11 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextField(
-                    onChanged: (text) {
-                      setState(() {
-                        _firstName = text;
-                      });
-                    },
+                    onChanged: (text) => setState(() => _firstName = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -99,11 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextField(
-                    onChanged: (text) {
-                      setState(() {
-                        _lastName = text;
-                      });
-                    },
+                    onChanged: (text) => setState(() => _lastName = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
