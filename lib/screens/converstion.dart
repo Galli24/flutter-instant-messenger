@@ -132,6 +132,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       },
                       textInputAction: TextInputAction.done,
                       onSubmitted: (_) {
+                        if (_text.isEmpty)
+                          return;
                         convService.sendTextMessageToConversation(_conversationUid, _text);
                         _text = '';
                         _textEditingController.clear();
