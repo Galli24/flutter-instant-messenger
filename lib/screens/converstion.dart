@@ -132,11 +132,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       },
                       textInputAction: TextInputAction.done,
                       onSubmitted: (_) {
-                        _text = _text.trim();
-                        if (_text.isEmpty)
-                          return;
+                        setState(() => _text = _text.trim());
+                        if (_text.isEmpty) return;
                         convService.sendTextMessageToConversation(_conversationUid, _text);
-                        _text = '';
+                        setState(() => _text = '');
                         _textEditingController.clear();
                       },
                     ),
