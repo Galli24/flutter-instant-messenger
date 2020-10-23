@@ -24,6 +24,14 @@ final TextStyle kBlackTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
+final TextStyle kBlackTitleTextStyle = TextStyle(
+  fontFamily: 'SourceSansPro',
+  color: Colors.black,
+  fontSize: 32,
+  letterSpacing: 2.5,
+  fontWeight: FontWeight.bold,
+);
+
 final TextStyle kErrorTextStyle = TextStyle(
   fontFamily: 'SourceSansPro',
   color: Colors.red.shade600,
