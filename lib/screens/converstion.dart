@@ -22,10 +22,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
   UserModel _userModel;
   ScrollController _scrollController = new ScrollController();
 
+  String _text;
+  TextEditingController _textEditingController = new TextEditingController();
+
   @override
   void initState() {
     _conversationUid = widget.data['conversationUid'];
     _userModel = widget.data['userModel'];
+    _text = '';
     super.initState();
   }
 
@@ -50,8 +54,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 child: StreamBuilder(
                   stream: state.getMessagesForConversation(_conversationUid),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.hasError)
-                       return Center(child: CircularProgressIndicator());
+                    if (!snapshot.hasData || snapshot.hasError) return Center(child: CircularProgressIndicator());
                     var conv = (snapshot.data as Conversation);
                     return ListView.builder(
                       reverse: true,
@@ -124,9 +127,21 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: _textEditingController,
                       decoration: InputDecoration(
                         hintText: 'Enter message',
                       ),
+                      onChanged: (text) {
+                        setState(() {
+                          _text = text;
+                        });
+                      },
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) {
+                        convService.sendTextMessageToConversation(_conversationUid, _text);
+                        _text = '';
+                        _textEditingController.clear();
+                      },
                     ),
                   ),
                 ],

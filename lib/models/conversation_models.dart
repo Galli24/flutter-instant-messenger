@@ -34,11 +34,20 @@ class Message {
         "\"}";
   }
 
+  Message(String sender, MessageType type, String content)
+      : _sender = sender,
+        _time = DateTime.now(),
+        _type = type,
+        _content = content;
+
   Message.fromMap(Map<dynamic, dynamic> data)
       : _sender = data['sender'],
         _time = (data['time'] as Timestamp).toDate(),
         _type = MessageType.values[data['type']],
         _content = data['content'];
+
+  Map<String, dynamic> toMap() =>
+      {'content': _content, 'sender': _sender, 'time': Timestamp.fromDate(_time), 'type': _type.index};
 }
 
 class Conversation {

@@ -48,28 +48,29 @@ class ConversationState with ChangeNotifier {
     });
   }
 
-  Future<bool> startConversation(String participantUid, Message message) async {
+  Future<String> startConversation(String participantUid, Message message) async {
     try {
       CollectionReference convColRef = _firestore.collection('conversations');
-      convColRef.add({
+      DocumentReference convRef = await convColRef.add({
         "messages": FieldValue.arrayUnion([message]),
         "participants": List.from([
           _userUid,
           participantUid,
         ]),
       });
-      return true;
+      return convRef.id;
     } catch (e) {
       print(e.toString());
-      return false;
+      return '';
     }
   }
 
-  Future<bool> sendMessageToConversation(String conversationId, Message message) async {
+  Future<bool> sendTextMessageToConversation(String conversationId, String text) async {
     try {
+      Message message = new Message(_userUid, MessageType.TEXT, text);
       DocumentReference conversationRef = _firestore.collection('conversations').doc(conversationId);
       conversationRef.update({
-        'messages': FieldValue.arrayUnion([message])
+        'messages': FieldValue.arrayUnion([message.toMap()])
       });
       return true;
     } catch (e) {
