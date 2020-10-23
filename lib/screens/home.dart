@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
                     return Card(
-                      color: Color(0xFF393E46),
+                      color: Color(0xFFA3F7BF),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               style: TextStyle(
                                                 fontFamily: "SourceSansPro",
                                                 fontSize: 24,
-                                                color: Color(0xFFEFF6EE),
+                                                color: Colors.black,
                                               ),
                                             ),
                                             Padding(
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 style: TextStyle(
                                                   fontFamily: "SourceSansPro",
                                                   fontSize: 16,
-                                                  color: Color(0xFFEFF6EE),
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ),

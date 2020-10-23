@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
+import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -22,21 +22,30 @@ class _ConversationScreenState extends State<ConversationScreen> {
   UserModel _userModel;
   ScrollController _scrollController = new ScrollController();
 
-  String _text;
   TextEditingController _textEditingController = new TextEditingController();
+  UserState _userService;
 
   @override
   void initState() {
     _conversationUid = widget.data['conversationUid'];
     _userModel = widget.data['userModel'];
-    _text = '';
+    _userService = Provider.of<UserState>(context, listen: false);
     super.initState();
   }
+
+  EdgeInsets getCardPadding(String sender) {
+    var padding = MediaQuery.of(context).size.width * 0.10;
+
+    return sender == _userService.currentUser().uid
+        ? EdgeInsets.fromLTRB(padding, 0, 5, 0)
+        : EdgeInsets.fromLTRB(5, 0, padding, 0);
+  }
+
+  Color getCardColor(String sender) => sender == _userService.currentUser().uid ? Color(0xFFA3F7BF) : Color(0xFFCFD7E4);
 
   @override
   Widget build(BuildContext context) {
     var convService = Provider.of<ConversationState>(context, listen: false);
-
     return Scaffold(
       backgroundColor: Color(0xFFEFF6EE),
       appBar: AppBar(
@@ -61,37 +70,43 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       scrollDirection: Axis.vertical,
                       controller: _scrollController,
                       itemCount: conv.messageList.length,
-                      itemBuilder: (context, index) => Container(
-                        child: Card(
-                          color: Color(0xFF393E46),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
+                      itemBuilder: (context, index) {
+                        var msg = conv.messageList[index];
+                        return Container(
+                          child: Padding(
+                            padding: getCardPadding(msg.sender),
+                            child: Card(
+                              color: getCardColor(msg.sender),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          msg.content,
+                                          style: kConversationMessage,
+                                        ),
+                                        Text(
+                                          DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                          style: kConversationDate,
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    Text(
-                                      conv.messageList[index].content,
-                                      style: kConversationMessage,
-                                    ),
-                                    Text(
-                                      DateFormat('d MMM - H:mm').format(conv.messageList[index].datetime.toLocal()),
-                                      style: kConversationDate,
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -103,19 +118,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   Expanded(
                     child: TextField(
                       autocorrect: true,
+                      maxLines: 5,
+                      minLines: 1,
                       controller: _textEditingController,
                       decoration: InputDecoration(
                         hintText: 'Enter message',
                       ),
-                      onChanged: (text) {
-                        setState(() {
-                          _text = text;
-                        });
-                      },
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (_) {
-                        convService.sendTextMessageToConversation(_conversationUid, _text);
-                        _text = '';
+                      textInputAction: TextInputAction.send,
+                      onEditingComplete: () {
+                        if (_textEditingController.text.isEmpty) return;
+                        convService.sendTextMessageToConversation(_conversationUid, _textEditingController.text);
                         _textEditingController.clear();
                       },
                     ),

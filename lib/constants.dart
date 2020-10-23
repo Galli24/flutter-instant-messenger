@@ -43,11 +43,11 @@ final TextStyle kErrorTextStyle = TextStyle(
 final TextStyle kConversationMessage = TextStyle(
   fontFamily: "SourceSansPro",
   fontSize: 24,
-  color: Color(0xFFEFF6EE),
+  color: Colors.black,
 );
 
 final TextStyle kConversationDate = TextStyle(
   fontFamily: "SourceSansPro",
   fontSize: 16,
-  color: Color(0xFFEFF6EE),
+  color: Colors.black,
 );
