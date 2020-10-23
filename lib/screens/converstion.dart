@@ -120,7 +120,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   Expanded(
                     child: TextField(
                       autocorrect: true,
-                      maxLines: 3,
+                      maxLines: 5,
                       minLines: 1,
                       controller: _textEditingController,
                       decoration: InputDecoration(
