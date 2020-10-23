@@ -18,9 +18,6 @@ class TopBar extends AppBar {
                 onPressed: () {
                   Navigator.pushNamed(context, '/profile');
                 }),
-            IconButton(
-                icon: Icon(Icons.power_settings_new, color: Colors.green),
-                onPressed: () => Provider.of<UserState>(context, listen: false).signOut(context)),
           ],
         );
 }
