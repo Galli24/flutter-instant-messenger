@@ -71,48 +71,31 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           ),
                           child: Column(
                             children: <Widget>[
-                              ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                conv.messageList[index].content,
-                                                style: TextStyle(
-                                                  fontFamily: "SourceSansPro",
-                                                  fontSize: 24,
-                                                  color: Color(0xFFEFF6EE),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 10),
-                                                child: Text(
-                                                  DateFormat('H:mm').format(conv.messageList[index].datetime.toLocal()),
-                                                  style: TextStyle(
-                                                    fontFamily: "SourceSansPro",
-                                                    fontSize: 16,
-                                                    color: Color(0xFFEFF6EE),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                    Text(
+                                      conv.messageList[index].content,
+                                      style: TextStyle(
+                                        fontFamily: "SourceSansPro",
+                                        fontSize: 24,
+                                        color: Color(0xFFEFF6EE),
                                       ),
+                                    ),
+                                    Text(
+                                      DateFormat('H:mm').format(conv.messageList[index].datetime.toLocal()),
+                                      style: TextStyle(
+                                        fontFamily: "SourceSansPro",
+                                        fontSize: 16,
+                                        color: Color(0xFFEFF6EE),
+                                      ),
+                                      textAlign: TextAlign.right,
                                     ),
                                   ],
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -127,6 +110,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                      autocorrect: true,
                       controller: _textEditingController,
                       decoration: InputDecoration(
                         hintText: 'Enter message',
