@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instant_messenger/services/user_service.dart';
-import 'package:provider/provider.dart';
 
 class TopBar extends AppBar {
   TopBar(BuildContext context)
