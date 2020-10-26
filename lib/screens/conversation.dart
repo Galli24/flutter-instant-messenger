@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
@@ -139,7 +136,24 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             return FutureBuilder(
                               future: _convService.getImageUrl(msg.content),
                               builder: (context, snapshot) {
-                                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                                if (!snapshot.hasData) {
+                                  return Container(
+                                    child: Padding(
+                                      padding: _getCardPadding(msg.sender),
+                                      child: Card(
+                                        color: _getCardColor(msg.sender),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
                                 return Container(
                                   child: Padding(
                                     padding: _getCardPadding(msg.sender),
