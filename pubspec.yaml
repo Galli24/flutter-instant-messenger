@@ -28,6 +28,7 @@ dependencies:
   image_picker: ^0.6.7+12
   modal_bottom_sheet: ^0.2.2
   uuid: ^2.2.2
+  cached_network_image: ^2.3.3
 
   cupertino_icons: ^0.1.3
 

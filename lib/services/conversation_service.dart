@@ -88,9 +88,12 @@ class ConversationState with ChangeNotifier {
   Future<bool> sendImageMessageToConversation(Conversation conversation, PickedFile pickedFile) async {
     try {
       String fileExt = pickedFile.path.substring(pickedFile.path.lastIndexOf('.') + 1);
-      String ref = '/images/conversations/' + conversation.participants.join('-') + '/' + Uuid().v4() + '.' + fileExt;
-      await _storage.ref(ref).putFile(File(pickedFile.path));
-      Message message = new Message(_userUid, MessageType.IMAGE, ref);
+      Reference ref = _storage
+          .ref('/images/conversations/' + conversation.participants.join('-') + '/' + Uuid().v4() + '.' + fileExt);
+      await ref.putFile(File(pickedFile.path));
+      String url = await ref.getDownloadURL();
+
+      Message message = new Message(_userUid, MessageType.IMAGE, url);
       DocumentReference conversationRef = _firestore.collection('conversations').doc(conversation.id);
       conversationRef.update({
         'messages': FieldValue.arrayUnion([message.toMap()])
@@ -99,15 +102,6 @@ class ConversationState with ChangeNotifier {
     } catch (e) {
       print(e.toString());
       return false;
-    }
-  }
-
-  Future<String> getImageUrl(String ref) async {
-    try {
-      return await _storage.ref(ref).getDownloadURL();
-    } catch (e) {
-      print(e.toString());
-      return '';
     }
   }
 }

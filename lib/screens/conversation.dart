@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
@@ -133,59 +134,40 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               ),
                             );
                           case MessageType.IMAGE:
-                            return FutureBuilder(
-                              future: _convService.getImageUrl(msg.content),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Container(
-                                    child: Padding(
-                                      padding: _getCardPadding(msg.sender),
-                                      child: Card(
-                                        color: _getCardColor(msg.sender),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20),
-                                          ),
-                                        ),
-                                        child: Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                                return Container(
-                                  child: Padding(
-                                    padding: _getCardPadding(msg.sender),
-                                    child: Card(
-                                      color: _getCardColor(msg.sender),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(20),
-                                        ),
-                                      ),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                              children: [
-                                                Image.network(snapshot.data),
-                                                Text(
-                                                  DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                                  style: kConversationDate,
-                                                  textAlign: TextAlign.right,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                            return Container(
+                              child: Padding(
+                                padding: _getCardPadding(msg.sender),
+                                child: Card(
+                                  color: _getCardColor(msg.sender),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
                                     ),
                                   ),
-                                );
-                              },
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            CachedNetworkImage(
+                                              imageUrl: msg.content,
+                                              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                              errorWidget: (context, url, error) => Icon(Icons.error),
+                                            ),
+                                            Text(
+                                              DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                              style: kConversationDate,
+                                              textAlign: TextAlign.right,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
                             );
                           default:
                             return Container(
