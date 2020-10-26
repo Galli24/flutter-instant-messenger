@@ -22,17 +22,16 @@ class Message {
   String get content => _content;
 
   @override
-  String toString() {
-    return "{\"sender\": \"" +
-        _sender +
-        "\", \"time\": " +
-        _time.toLocal().toString() +
-        ", \"type\": \"" +
-        _type.toString() +
-        "\", \"content\": \"" +
-        _content +
-        "\"}";
-  }
+  String toString() =>
+      "{\"sender\": \"" +
+      _sender +
+      "\", \"time\": " +
+      _time.toLocal().toString() +
+      ", \"type\": \"" +
+      _type.toString() +
+      "\", \"content\": \"" +
+      _content +
+      "\"}";
 
   Message(String sender, MessageType type, String content)
       : _sender = sender,
@@ -92,7 +91,8 @@ class History {
 
   History.fromSnapshot(QuerySnapshot snapshot) : _conversations = new List<Conversation>() {
     for (QueryDocumentSnapshot documentSnapshot in snapshot.docs) {
-      _conversations.add(Conversation.fromSnapshot(documentSnapshot));
+      Conversation conv = Conversation.fromSnapshot(documentSnapshot);
+      if (conv.messageList.isNotEmpty) _conversations.add(conv);
     }
     _conversations.sort((conversation1, conversation2) =>
         conversation2.messageList.last.datetime.compareTo(conversation1.messageList.last.datetime));

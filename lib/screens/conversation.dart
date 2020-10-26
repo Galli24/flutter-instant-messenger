@@ -22,7 +22,6 @@ class ConversationScreen extends StatefulWidget {
 }
 
 class _ConversationScreenState extends State<ConversationScreen> {
-  Conversation _conversation;
   UserModel _userModel;
   ScrollController _scrollController = new ScrollController();
 
@@ -33,16 +32,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void initState() {
-    _conversation = widget.data['conversation'];
     _userModel = widget.data['userModel'];
     _userService = Provider.of<UserState>(context, listen: false);
     _convService = Provider.of<ConversationState>(context, listen: false);
+    _convService.participantUid = _userModel.id;
+    _convService.currentConversation = widget.data['conversation'];
     super.initState();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _convService.participantUid = '';
+    _convService.currentConversation = null;
     super.dispose();
   }
 
@@ -85,130 +87,138 @@ class _ConversationScreenState extends State<ConversationScreen> {
           children: [
             Consumer<ConversationState>(
               builder: (context, state, child) => Expanded(
-                child: StreamBuilder(
-                  stream: state.getMessagesForConversation(_conversation.id),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.hasError) return Center(child: CircularProgressIndicator());
-                    var conv = (snapshot.data as Conversation);
-                    return ListView.builder(
-                      reverse: true,
-                      scrollDirection: Axis.vertical,
-                      controller: _scrollController,
-                      itemCount: conv.messageList.length,
-                      itemBuilder: (context, index) {
-                        var msg = conv.messageList[index];
-                        switch (msg.type) {
-                          case MessageType.TEXT:
-                            return Container(
-                              child: Padding(
-                                padding: _getCardPadding(msg.sender),
-                                child: Card(
-                                  color: _getCardColor(msg.sender),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: _convService.currentConversation != null
+                    ? StreamBuilder(
+                        stream: state.getMessagesForConversation(_convService.currentConversation.id),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData || snapshot.hasError) return Center(child: CircularProgressIndicator());
+                          var conv = (snapshot.data as Conversation);
+                          return ListView.builder(
+                            reverse: true,
+                            scrollDirection: Axis.vertical,
+                            controller: _scrollController,
+                            itemCount: conv.messageList.length,
+                            itemBuilder: (context, index) {
+                              var msg = conv.messageList[index];
+                              switch (msg.type) {
+                                case MessageType.TEXT:
+                                  return Container(
+                                    child: Padding(
+                                      padding: _getCardPadding(msg.sender),
+                                      child: Card(
+                                        color: _getCardColor(msg.sender),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            Text(
-                                              msg.content,
-                                              style: kConversationMessage,
-                                            ),
-                                            Text(
-                                              DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                              style: kConversationDate,
-                                              textAlign: TextAlign.right,
-                                            ),
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Text(
+                                                    msg.content,
+                                                    style: kConversationMessage,
+                                                  ),
+                                                  Text(
+                                                    DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                                    style: kConversationDate,
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          case MessageType.IMAGE:
-                            return Container(
-                              child: Padding(
-                                padding: _getCardPadding(msg.sender),
-                                child: Card(
-                                  color: _getCardColor(msg.sender),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
+                                      ),
                                     ),
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  );
+                                case MessageType.IMAGE:
+                                  return Container(
+                                    child: Padding(
+                                      padding: _getCardPadding(msg.sender),
+                                      child: Card(
+                                        color: _getCardColor(msg.sender),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            CachedNetworkImage(
-                                              imageUrl: msg.content,
-                                              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                                              errorWidget: (context, url, error) => Icon(Icons.error),
-                                            ),
-                                            Text(
-                                              DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                              style: kConversationDate,
-                                              textAlign: TextAlign.right,
-                                            ),
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  CachedNetworkImage(
+                                                    imageUrl: msg.content,
+                                                    placeholder: (context, url) =>
+                                                        Center(child: CircularProgressIndicator()),
+                                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                                  ),
+                                                  Text(
+                                                    DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                                    style: kConversationDate,
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          default:
-                            return Container(
-                              child: Padding(
-                                padding: _getCardPadding(msg.sender),
-                                child: Card(
-                                  color: _getCardColor(msg.sender),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
+                                      ),
                                     ),
-                                  ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  );
+                                default:
+                                  return Container(
+                                    child: Padding(
+                                      padding: _getCardPadding(msg.sender),
+                                      child: Card(
+                                        color: _getCardColor(msg.sender),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            Text(
-                                              'Message type not handled',
-                                              style: kConversationMessage,
-                                            ),
-                                            Text(
-                                              DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                              style: kConversationDate,
-                                              textAlign: TextAlign.right,
-                                            ),
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Text(
+                                                    'Message type not handled',
+                                                    style: kConversationMessage,
+                                                  ),
+                                                  Text(
+                                                    DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                                    style: kConversationDate,
+                                                    textAlign: TextAlign.right,
+                                                  ),
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                        }
-                      },
-                    );
-                  },
-                ),
+                                      ),
+                                    ),
+                                  );
+                              }
+                            },
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text(
+                        'Send a message to start the conversation',
+                        style: kBlackTextStyle,
+                        textAlign: TextAlign.center,
+                      )),
               ),
             ),
             Container(
@@ -223,8 +233,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             expand: false,
                             context: context,
                             backgroundColor: Colors.white,
-                            builder: (context, scrollController) =>
-                                ImagePreview(conversation: _conversation, pickedFile: pickedFile));
+                            builder: (context, scrollController) => ImagePreview(pickedFile: pickedFile));
                       } else {
                         var lostData = await _retrieveLostImageData();
                         if (lostData is PickedFile) {
@@ -232,8 +241,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               expand: false,
                               context: context,
                               backgroundColor: Colors.white,
-                              builder: (context, scrollController) =>
-                                  ImagePreview(conversation: _conversation, pickedFile: lostData));
+                              builder: (context, scrollController) => ImagePreview(pickedFile: lostData));
                         }
                       }
                     },
@@ -248,8 +256,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             expand: false,
                             context: context,
                             backgroundColor: Colors.white,
-                            builder: (context, scrollController) =>
-                                ImagePreview(conversation: _conversation, pickedFile: pickedFile));
+                            builder: (context, scrollController) => ImagePreview(pickedFile: pickedFile));
                       } else {
                         var lostData = await _retrieveLostImageData();
                         if (lostData is PickedFile) {
@@ -257,8 +264,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               expand: false,
                               context: context,
                               backgroundColor: Colors.white,
-                              builder: (context, scrollController) =>
-                                  ImagePreview(conversation: _conversation, pickedFile: lostData));
+                              builder: (context, scrollController) => ImagePreview(pickedFile: lostData));
                         }
                       }
                     },
@@ -276,7 +282,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       textInputAction: TextInputAction.send,
                       onEditingComplete: () {
                         if (_textEditingController.text.isEmpty) return;
-                        _convService.sendTextMessageToConversation(_conversation.id, _textEditingController.text);
+                        _convService.sendTextMessageToConversation(_textEditingController.text);
                         _textEditingController.clear();
                       },
                     ),

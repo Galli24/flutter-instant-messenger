@@ -14,10 +14,14 @@ class ConversationState with ChangeNotifier {
   final _storage = FirebaseStorage.instance;
 
   String _userUid = '';
+  String _participantUid = '';
+  Conversation currentConversation;
+
   History _history = History();
   StreamSubscription<History> _historyTracking;
 
   set userUid(String uid) => _userUid = uid;
+  set participantUid(String uid) => _participantUid = uid;
   History get history => _history;
 
   void trackMessageHistory() {
@@ -31,6 +35,22 @@ class ConversationState with ChangeNotifier {
 
   void stopTrackingMessageHistory() {
     if (_historyTracking != null) _historyTracking.cancel();
+  }
+
+  Future<List<UserModel>> getContacts() async {
+    List<UserModel> _contacts = new List<UserModel>();
+    QuerySnapshot snapshot = await _firestore.collection('users').get();
+    for (DocumentSnapshot doc in snapshot.docs) if (doc.id != _userUid) _contacts.add(UserModel.fromDocument(doc));
+    return _contacts;
+  }
+
+  Future<Conversation> getConversationWithUser(String otherUserId) async {
+    var conversationsDocs =
+        (await _firestore.collection('conversations').where('participants', arrayContains: _userUid).get()).docs;
+
+    for (var snapshot in conversationsDocs)
+      if (List.from(snapshot['participants']).contains(otherUserId)) return Conversation.fromSnapshot(snapshot);
+    return null;
   }
 
   Future<UserModel> getParticipant(Conversation conversation) async {
@@ -54,27 +74,32 @@ class ConversationState with ChangeNotifier {
     });
   }
 
-  Future<String> startConversation(String participantUid, Message message) async {
+  Future<bool> startConversation() async {
     try {
+      if (_participantUid.isEmpty) return false;
+
       CollectionReference convColRef = _firestore.collection('conversations');
       DocumentReference convRef = await convColRef.add({
-        "messages": FieldValue.arrayUnion([message]),
-        "participants": List.from([
+        'messages': List.from([]),
+        'participants': List.from([
           _userUid,
-          participantUid,
+          _participantUid,
         ]),
       });
-      return convRef.id;
+      currentConversation = Conversation.fromSnapshot(await convRef.get());
+      return true;
     } catch (e) {
       print(e.toString());
-      return '';
+      return false;
     }
   }
 
-  Future<bool> sendTextMessageToConversation(String conversationId, String text) async {
+  Future<bool> sendTextMessageToConversation(String text) async {
     try {
+      if (currentConversation == null) if (!await startConversation()) return false;
+
       Message message = new Message(_userUid, MessageType.TEXT, text);
-      DocumentReference conversationRef = _firestore.collection('conversations').doc(conversationId);
+      DocumentReference conversationRef = _firestore.collection('conversations').doc(currentConversation.id);
       conversationRef.update({
         'messages': FieldValue.arrayUnion([message.toMap()])
       });
@@ -85,16 +110,18 @@ class ConversationState with ChangeNotifier {
     }
   }
 
-  Future<bool> sendImageMessageToConversation(Conversation conversation, PickedFile pickedFile) async {
+  Future<bool> sendImageMessageToConversation(PickedFile pickedFile) async {
     try {
+      if (currentConversation == null) if (!await startConversation()) return false;
+
       String fileExt = pickedFile.path.substring(pickedFile.path.lastIndexOf('.') + 1);
-      Reference ref = _storage
-          .ref('/images/conversations/' + conversation.participants.join('-') + '/' + Uuid().v4() + '.' + fileExt);
+      Reference ref = _storage.ref(
+          '/images/conversations/' + currentConversation.participants.join('-') + '/' + Uuid().v4() + '.' + fileExt);
       await ref.putFile(File(pickedFile.path));
       String url = await ref.getDownloadURL();
 
       Message message = new Message(_userUid, MessageType.IMAGE, url);
-      DocumentReference conversationRef = _firestore.collection('conversations').doc(conversation.id);
+      DocumentReference conversationRef = _firestore.collection('conversations').doc(currentConversation.id);
       conversationRef.update({
         'messages': FieldValue.arrayUnion([message.toMap()])
       });

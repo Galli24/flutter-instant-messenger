@@ -127,6 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.pushNamed(context, '/contacts'),
+        child: Icon(Icons.message, color: Colors.white),
+        backgroundColor: Color(0xFFA3F7BF),
+      ),
     );
   }
 }
