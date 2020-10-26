@@ -14,32 +14,42 @@ class ImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              color: Colors.white,
-              child: SizedBox(
-                width: 200,
-                height: 200,
-                child: Image.file(File(pickedFile.path)),
-              ),
+    return SafeArea(
+      top: false,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          Image.file(File(pickedFile.path)),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  iconSize: 35.0,
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.white,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Provider.of<ConversationState>(context, listen: false)
+                        .sendImageMessageToConversation(conversationId, pickedFile);
+                    Navigator.of(context).pop();
+                  },
+                  iconSize: 35.0,
+                  icon: Icon(
+                    Icons.check,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-                title: Text('Send'),
-                onTap: () {
-                  Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(conversationId, pickedFile);
-                  Navigator.of(context).pop();
-                }),
-            ListTile(
-              title: Text('Cancel'),
-              onTap: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
