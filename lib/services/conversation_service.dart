@@ -1,15 +1,19 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ConversationState with ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
+
   String _userUid = '';
   History _history = History();
   StreamSubscription<History> _historyTracking;
@@ -82,12 +86,13 @@ class ConversationState with ChangeNotifier {
     }
   }
 
-  Future<bool> sendImageMessageToConversation(String conversationId, PickedFile pickedFile) async {
+  Future<bool> sendImageMessageToConversation(Conversation conversation, PickedFile pickedFile) async {
     try {
-      Uint8List imageBytes = await pickedFile.readAsBytes();
-      String image = String.fromCharCodes(imageBytes);
-      Message message = new Message(_userUid, MessageType.IMAGE, image);
-      DocumentReference conversationRef = _firestore.collection('conversations').doc(conversationId);
+      String fileExt = pickedFile.path.substring(pickedFile.path.lastIndexOf('.') + 1);
+      String ref = '/images/conversations/' + conversation.participants.join('-') + '/' + Uuid().v4() + '.' + fileExt;
+      await _storage.ref(ref).putFile(File(pickedFile.path));
+      Message message = new Message(_userUid, MessageType.IMAGE, ref);
+      DocumentReference conversationRef = _firestore.collection('conversations').doc(conversation.id);
       conversationRef.update({
         'messages': FieldValue.arrayUnion([message.toMap()])
       });
@@ -95,6 +100,15 @@ class ConversationState with ChangeNotifier {
     } catch (e) {
       print(e.toString());
       return false;
+    }
+  }
+
+  Future<String> getImageUrl(String ref) async {
+    try {
+      return await _storage.ref(ref).getDownloadURL();
+    } catch (e) {
+      print(e.toString());
+      return '';
     }
   }
 }

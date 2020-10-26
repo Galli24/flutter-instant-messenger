@@ -27,6 +27,7 @@ dependencies:
   provider: ^4.3.2+2
   image_picker: ^0.6.7+12
   modal_bottom_sheet: ^0.2.2
+  uuid: ^2.2.2
 
   cupertino_icons: ^0.1.3
 

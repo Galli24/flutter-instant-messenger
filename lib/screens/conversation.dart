@@ -24,7 +24,7 @@ class ConversationScreen extends StatefulWidget {
 }
 
 class _ConversationScreenState extends State<ConversationScreen> {
-  String _conversationUid;
+  Conversation _conversation;
   UserModel _userModel;
   ScrollController _scrollController = new ScrollController();
 
@@ -35,7 +35,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void initState() {
-    _conversationUid = widget.data['conversationUid'];
+    _conversation = widget.data['conversation'];
     _userModel = widget.data['userModel'];
     _userService = Provider.of<UserState>(context, listen: false);
     _convService = Provider.of<ConversationState>(context, listen: false);
@@ -88,7 +88,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
             Consumer<ConversationState>(
               builder: (context, state, child) => Expanded(
                 child: StreamBuilder(
-                  stream: state.getMessagesForConversation(_conversationUid),
+                  stream: state.getMessagesForConversation(_conversation.id),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData || snapshot.hasError) return Center(child: CircularProgressIndicator());
                     var conv = (snapshot.data as Conversation);
@@ -136,36 +136,42 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               ),
                             );
                           case MessageType.IMAGE:
-                            return Container(
-                              child: Padding(
-                                padding: _getCardPadding(msg.sender),
-                                child: Card(
-                                  color: _getCardColor(msg.sender),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
+                            return FutureBuilder(
+                              future: _convService.getImageUrl(msg.content),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                                return Container(
+                                  child: Padding(
+                                    padding: _getCardPadding(msg.sender),
+                                    child: Card(
+                                      color: _getCardColor(msg.sender),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                              children: [
+                                                Image.network(snapshot.data),
+                                                Text(
+                                                  DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                                  style: kConversationDate,
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            Image.memory(Uint8List.fromList(msg.content.codeUnits)),
-                                            Text(
-                                              DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                              style: kConversationDate,
-                                              textAlign: TextAlign.right,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                );
+                              },
                             );
                           default:
                             return Container(
@@ -222,7 +228,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             context: context,
                             backgroundColor: Colors.white,
                             builder: (context, scrollController) =>
-                                ImagePreview(conversationId: _conversationUid, pickedFile: pickedFile));
+                                ImagePreview(conversation: _conversation, pickedFile: pickedFile));
                       } else {
                         var lostData = await _retrieveLostImageData();
                         if (lostData is PickedFile) {
@@ -231,7 +237,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               context: context,
                               backgroundColor: Colors.white,
                               builder: (context, scrollController) =>
-                                  ImagePreview(conversationId: _conversationUid, pickedFile: lostData));
+                                  ImagePreview(conversation: _conversation, pickedFile: lostData));
                         }
                       }
                     },
@@ -247,7 +253,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             context: context,
                             backgroundColor: Colors.white,
                             builder: (context, scrollController) =>
-                                ImagePreview(conversationId: _conversationUid, pickedFile: pickedFile));
+                                ImagePreview(conversation: _conversation, pickedFile: pickedFile));
                       } else {
                         var lostData = await _retrieveLostImageData();
                         if (lostData is PickedFile) {
@@ -256,7 +262,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               context: context,
                               backgroundColor: Colors.white,
                               builder: (context, scrollController) =>
-                                  ImagePreview(conversationId: _conversationUid, pickedFile: lostData));
+                                  ImagePreview(conversation: _conversation, pickedFile: lostData));
                         }
                       }
                     },
@@ -274,7 +280,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       textInputAction: TextInputAction.send,
                       onEditingComplete: () {
                         if (_textEditingController.text.isEmpty) return;
-                        _convService.sendTextMessageToConversation(_conversationUid, _textEditingController.text);
+                        _convService.sendTextMessageToConversation(_conversation.id, _textEditingController.text);
                         _textEditingController.clear();
                       },
                     ),

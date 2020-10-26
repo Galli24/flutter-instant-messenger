@@ -2,15 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ImagePreview extends StatelessWidget {
-  final String conversationId;
+  final Conversation conversation;
   final PickedFile pickedFile;
 
-  ImagePreview({Key key, @required this.conversationId, @required this.pickedFile}) : super(key: key);
+  ImagePreview({Key key, @required this.conversation, @required this.pickedFile}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class ImagePreview extends StatelessWidget {
                 IconButton(
                   onPressed: () {
                     Provider.of<ConversationState>(context, listen: false)
-                        .sendImageMessageToConversation(conversationId, pickedFile);
+                        .sendImageMessageToConversation(conversation, pickedFile);
                     Navigator.of(context).pop();
                   },
                   iconSize: 35.0,

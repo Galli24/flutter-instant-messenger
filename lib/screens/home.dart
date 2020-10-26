@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context,
                           '/conversation',
                           arguments: {
-                            'conversationUid': state.history.conversationList[index].id,
+                            'conversation': state.history.conversationList[index],
                             'userModel': snapshot.data as UserModel
                           },
                         ),
