@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ConversationState with ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
@@ -68,6 +71,22 @@ class ConversationState with ChangeNotifier {
   Future<bool> sendTextMessageToConversation(String conversationId, String text) async {
     try {
       Message message = new Message(_userUid, MessageType.TEXT, text);
+      DocumentReference conversationRef = _firestore.collection('conversations').doc(conversationId);
+      conversationRef.update({
+        'messages': FieldValue.arrayUnion([message.toMap()])
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> sendImageMessageToConversation(String conversationId, PickedFile pickedFile) async {
+    try {
+      Uint8List imageBytes = await pickedFile.readAsBytes();
+      String image = String.fromCharCodes(imageBytes);
+      Message message = new Message(_userUid, MessageType.IMAGE, image);
       DocumentReference conversationRef = _firestore.collection('conversations').doc(conversationId);
       conversationRef.update({
         'messages': FieldValue.arrayUnion([message.toMap()])

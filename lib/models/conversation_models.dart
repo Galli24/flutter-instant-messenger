@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum MessageType {
   TEXT,
-  PHOTO,
+  IMAGE,
   LOCATION,
 }
 
