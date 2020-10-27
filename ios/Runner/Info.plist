@@ -42,8 +42,12 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access to the library is required to send photos</string>
+	<string>This app needs access to your library to send photos</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Access to the camera is required to take photos and send them</string>
+	<string>This app needs access to your camera to take and send photos</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location to send it.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location to send it.</string>
 </dict>
 </plist>
