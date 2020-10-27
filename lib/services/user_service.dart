@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,30 +6,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
+import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:flutter_instant_messenger/utils/loader.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class UserState with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   User _user;
-  UserModel _userInfo;
   bool _isLoggedIn = false;
   bool _userInitiatedAction = false;
 
   bool isLoggedIn() => _isLoggedIn;
   User currentUser() => _user;
-  UserModel currentUserInfo() => _userInfo;
 
   void trackUserState() {
     _auth.authStateChanges().listen((User user) {
       if (user != null && _user == null) {
         // Sign in
         _user = user;
-        _getCurrentUserInfo();
         _isLoggedIn = true;
         print('Sign in, user initiated: $_userInitiatedAction');
         if (!_userInitiatedAction)
@@ -38,7 +36,6 @@ class UserState with ChangeNotifier {
       } else if (user == null && _user != null) {
         // Sign out
         _user = null;
-        _userInfo = null;
         _isLoggedIn = false;
         print('Sign out, user initiated: $_userInitiatedAction');
         if (!_userInitiatedAction)
@@ -53,26 +50,6 @@ class UserState with ChangeNotifier {
         print('Token refresh');
       }
     });
-  }
-
-  Future<void> _getCurrentUserInfo() async =>
-      _userInfo = UserModel.fromDocument(await _firestore.collection('users').doc(_user.uid).get());
-
-  Future<bool> uploadProfileImage(PickedFile pickedFile) async {
-    try {
-      String fileExt = pickedFile.path.substring(pickedFile.path.lastIndexOf('.') + 1);
-      Reference ref = _storage.ref('/images/profiles/' + _user.uid + '/' + Uuid().v4() + '.' + fileExt);
-      await ref.putFile(File(pickedFile.path));
-      String url = await ref.getDownloadURL();
-
-      DocumentReference userRef = _firestore.collection('users').doc(_user.uid);
-      userRef.update({'profileImageUrl': url});
-      _userInfo.profileImageUrl = url;
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return false;
-    }
   }
 
   Future<String> registerWithEmailAndPassword(
@@ -132,11 +109,91 @@ class UserState with ChangeNotifier {
 
   void signOut(BuildContext context) async {
     _userInitiatedAction = true;
+    Provider.of<UserInfo>(context, listen: false).stopTrackingCurrentUserInfo();
+    Provider.of<ConversationState>(context, listen: false).stopTrackingMessageHistory();
     showAlertDialog(context);
     await _auth.signOut();
     _user = null;
-    _userInfo = null;
     _isLoggedIn = false;
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+}
+
+class UserInfo with ChangeNotifier {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  String _userUid;
+  UserModel _userInfo;
+  StreamSubscription _userInfoTrackingSub;
+
+  set userUid(value) => _userUid = value;
+  UserModel currentUserInfo() => _userInfo;
+
+  void trackCurrentUserInfo() {
+    if (_userInfoTrackingSub == null) {
+      _userInfoTrackingSub = _firestore
+          .collection('users')
+          .doc(_userUid)
+          .snapshots()
+          .map((userDoc) => UserModel.fromDocument(userDoc))
+          .listen((UserModel userModel) {
+        _userInfo = userModel;
+        notifyListeners();
+      });
+    }
+  }
+
+  void stopTrackingCurrentUserInfo() {
+    if (_userInfoTrackingSub != null) {
+      _userInfoTrackingSub.cancel();
+      _userInfoTrackingSub = null;
+      _userUid = null;
+      _userInfo = null;
+    }
+  }
+
+  void _deleteOldProfileImage() async {
+    try {
+      if (_userInfo.profileImageUrl.isEmpty) return;
+      Reference imageRef = _storage.refFromURL(_userInfo.profileImageUrl);
+      imageRef.delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<bool> uploadProfileImage(PickedFile pickedFile) async {
+    try {
+      _deleteOldProfileImage();
+
+      String fileExt = pickedFile.path.substring(pickedFile.path.lastIndexOf('.') + 1);
+      Reference ref = _storage.ref('/images/profiles/' + _userUid + '/' + Uuid().v4() + '.' + fileExt);
+      await ref.putFile(File(pickedFile.path));
+      String url = await ref.getDownloadURL();
+
+      DocumentReference userRef = _firestore.collection('users').doc(_userUid);
+      userRef.update({'profileImageUrl': url});
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> updateUserName(String fullName) async {
+    try {
+      fullName = fullName.trim().replaceAll(new RegExp(r'\s+'), ' ');
+      List<String> names = fullName.split(' ');
+      String firstName = names.first;
+      String lastName = names.length > 1 ? names.last : '';
+
+      DocumentReference userRef = _firestore.collection('users').doc(_userUid);
+      userRef.update({'firstName': firstName, 'lastName': lastName});
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
   }
 }

@@ -71,6 +71,33 @@ class _ConversationScreenState extends State<ConversationScreen> {
     }
   }
 
+  void _showPickedFileModal(PickedFile pickedFile) async {
+    if (pickedFile != null) {
+      showMaterialModalBottomSheet(
+          expand: false,
+          context: context,
+          backgroundColor: Colors.white,
+          builder: (context, scrollController) => ImagePreview(
+                pickedFile: pickedFile,
+                onPressedAction: () =>
+                    Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(pickedFile),
+              ));
+    } else {
+      var lostData = await _retrieveLostImageData();
+      if (lostData is PickedFile) {
+        showMaterialModalBottomSheet(
+            expand: false,
+            context: context,
+            backgroundColor: Colors.white,
+            builder: (context, scrollController) => ImagePreview(
+                  pickedFile: lostData,
+                  onPressedAction: () =>
+                      Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(pickedFile),
+                ));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +125,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             scrollDirection: Axis.vertical,
                             controller: _scrollController,
                             itemCount: conv.messageList.length,
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             itemBuilder: (context, index) {
                               var msg = conv.messageList[index];
                               switch (msg.type) {
@@ -226,47 +254,17 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 children: [
                   RaisedButton(
                     onPressed: () async {
-                      FocusScope.of(context).requestFocus(new FocusNode());
+                      FocusScope.of(context).unfocus();
                       PickedFile pickedFile = await _imagePicker.getImage(source: ImageSource.camera);
-                      if (pickedFile != null) {
-                        showMaterialModalBottomSheet(
-                            expand: false,
-                            context: context,
-                            backgroundColor: Colors.white,
-                            builder: (context, scrollController) => ImagePreview(pickedFile: pickedFile));
-                      } else {
-                        var lostData = await _retrieveLostImageData();
-                        if (lostData is PickedFile) {
-                          showMaterialModalBottomSheet(
-                              expand: false,
-                              context: context,
-                              backgroundColor: Colors.white,
-                              builder: (context, scrollController) => ImagePreview(pickedFile: lostData));
-                        }
-                      }
+                      _showPickedFileModal(pickedFile);
                     },
                     child: Icon(Icons.photo_camera),
                   ),
                   RaisedButton(
                     onPressed: () async {
-                      FocusScope.of(context).requestFocus(new FocusNode());
+                      FocusScope.of(context).unfocus();
                       PickedFile pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
-                      if (pickedFile != null) {
-                        showMaterialModalBottomSheet(
-                            expand: false,
-                            context: context,
-                            backgroundColor: Colors.white,
-                            builder: (context, scrollController) => ImagePreview(pickedFile: pickedFile));
-                      } else {
-                        var lostData = await _retrieveLostImageData();
-                        if (lostData is PickedFile) {
-                          showMaterialModalBottomSheet(
-                              expand: false,
-                              context: context,
-                              backgroundColor: Colors.white,
-                              builder: (context, scrollController) => ImagePreview(pickedFile: lostData));
-                        }
-                      }
+                      _showPickedFileModal(pickedFile);
                     },
                     child: Icon(Icons.photo),
                   ),

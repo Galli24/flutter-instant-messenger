@@ -34,7 +34,11 @@ class ConversationState with ChangeNotifier {
   }
 
   void stopTrackingMessageHistory() {
-    if (_historyTracking != null) _historyTracking.cancel();
+    if (_historyTracking != null) {
+      _historyTracking.cancel();
+      _historyTracking = null;
+      _history = History();
+    }
   }
 
   Future<List<UserModel>> getContacts() async {

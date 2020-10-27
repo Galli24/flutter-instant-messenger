@@ -25,6 +25,7 @@ class FirebaseInit extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => UserState()),
         ChangeNotifierProvider(create: (context) => ConversationState()),
+        ChangeNotifierProvider(create: (context) => UserInfo()),
       ],
       child: FutureBuilder(
         future: _initialization,

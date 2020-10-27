@@ -2,11 +2,13 @@ class UserModel {
   final String _id;
   final String _firstName;
   final String _lastName;
-  String profileImageUrl;
+  final String _profileImageUrl;
 
   String get id => _id;
   String get lastName => _lastName;
   String get fullName => _firstName + ' ' + _lastName;
+  String get profileImageUrl => _profileImageUrl;
+
   @override
   String toString() =>
       "{\"id\": \"" +
@@ -16,12 +18,12 @@ class UserModel {
       "\", \"lastName\": " +
       _lastName +
       "\", \"profileImageUrl\": " +
-      profileImageUrl +
+      _profileImageUrl +
       "\"}";
 
   UserModel.fromDocument(document)
       : _id = document.id,
         _firstName = document['firstName'],
         _lastName = document['lastName'],
-        profileImageUrl = document['profileImageUrl'];
+        _profileImageUrl = document['profileImageUrl'];
 }
