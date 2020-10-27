@@ -57,10 +57,14 @@ class ConversationState with ChangeNotifier {
     return null;
   }
 
-  Future<UserModel> getParticipant(Conversation conversation) async {
+  Stream<UserModel> getParticipant(Conversation conversation) {
     String uidToSearch =
         conversation.participants[0] == _userUid ? conversation.participants[1] : conversation.participants[0];
-    return UserModel.fromDocument(await _firestore.collection('users').doc(uidToSearch).get());
+    return _firestore
+        .collection('users')
+        .doc(uidToSearch)
+        .snapshots()
+        .map((userDoc) => UserModel.fromDocument(userDoc));
   }
 
   Stream<History> _getHistory() {
