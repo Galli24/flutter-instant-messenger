@@ -43,7 +43,6 @@ class ImagePreview extends StatelessWidget {
                     child: IconButton(
                       onPressed: () {
                         onPressedAction();
-
                         Navigator.of(context).pop();
                       },
                       iconSize: 35.0,
