@@ -120,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 )
                               : Icon(
                                   Icons.account_circle_rounded,
-                                  size: 100,
+                                  size: 200,
                                   color: Color(0xFF29A19C),
                                 ),
                           Expanded(
