@@ -5,8 +5,10 @@ import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:flutter_instant_messenger/widgets/image_preview.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong/latlong.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -98,6 +100,58 @@ class _ConversationScreenState extends State<ConversationScreen> {
     }
   }
 
+  Widget _getWidgetBasedOnMessageType(Message msg) {
+    switch (msg.type) {
+      case MessageType.TEXT:
+        return Text(
+          msg.content,
+          style: kConversationMessage,
+        );
+      case MessageType.IMAGE:
+        return ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: CachedNetworkImage(
+            imageUrl: msg.content,
+            placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        );
+      case MessageType.LOCATION:
+        List<String> pos = msg.content.split(',');
+        return ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          child: Container(
+            height: 200,
+            child: FlutterMap(
+              options: MapOptions(
+                center: LatLng(double.parse(pos[0]), double.parse(pos[1])),
+                zoom: 15.0,
+              ),
+              layers: [
+                TileLayerOptions(
+                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", subdomains: ['a', 'b', 'c']),
+                MarkerLayerOptions(
+                  markers: [
+                    Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: LatLng(51.5, -0.09),
+                      builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      default:
+        return Text(
+          'Message type not handled',
+          style: kConversationMessage,
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,118 +182,44 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             itemBuilder: (context, index) {
                               var msg = conv.messageList[index];
-                              switch (msg.type) {
-                                case MessageType.TEXT:
-                                  return Container(
-                                    child: Padding(
-                                      padding: _getCardPadding(msg.sender),
-                                      child: Card(
-                                        color: _getCardColor(msg.sender),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                children: [
-                                                  Text(
-                                                    msg.content,
-                                                    style: kConversationMessage,
-                                                  ),
-                                                  Text(
-                                                    DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                                    style: kConversationDate,
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                              return Container(
+                                child: Padding(
+                                  padding: _getCardPadding(msg.sender),
+                                  child: Card(
+                                    color: _getCardColor(msg.sender),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
                                       ),
                                     ),
-                                  );
-                                case MessageType.IMAGE:
-                                  return Container(
-                                    child: Padding(
-                                      padding: _getCardPadding(msg.sender),
-                                      child: Card(
-                                        color: _getCardColor(msg.sender),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: msg.content,
-                                                      placeholder: (context, url) =>
-                                                          Center(child: CircularProgressIndicator()),
-                                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                  children: [
+                                                    _getWidgetBasedOnMessageType(msg),
+                                                    Text(
+                                                      DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
+                                                      style: kConversationDate,
+                                                      textAlign: TextAlign.right,
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                                    style: kConversationDate,
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                default:
-                                  return Container(
-                                    child: Padding(
-                                      padding: _getCardPadding(msg.sender),
-                                      child: Card(
-                                        color: _getCardColor(msg.sender),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                children: [
-                                                  Text(
-                                                    'Message type not handled',
-                                                    style: kConversationMessage,
-                                                  ),
-                                                  Text(
-                                                    DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
-                                                    style: kConversationDate,
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                      ],
                                     ),
-                                  );
-                              }
+                                  ),
+                                ),
+                              );
                             },
                           );
                         },
