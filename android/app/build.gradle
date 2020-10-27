@@ -41,7 +41,8 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "io.github.galli24.flutter_instant_messenger"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
+        compileSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
