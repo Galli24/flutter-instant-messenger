@@ -22,26 +22,35 @@ class ImagePreview extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  iconSize: 35.0,
-                  icon: Icon(
-                    Icons.cancel,
-                    color: Colors.white,
+                ClipRRect(
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(10)),
+                  child: Container(
+                    color: Colors.black26,
+                    child: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      iconSize: 35.0,
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    onPressedAction();
-
-                    Navigator.of(context).pop();
-                  },
-                  iconSize: 35.0,
-                  icon: Icon(
-                    Icons.check,
-                    color: Colors.white,
+                ClipRRect(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10)),
+                  child: Container(
+                    color: Colors.black26,
+                    child: IconButton(
+                      onPressed: () {
+                        onPressedAction();
+                        Navigator.of(context).pop();
+                      },
+                      iconSize: 35.0,
+                      icon: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
