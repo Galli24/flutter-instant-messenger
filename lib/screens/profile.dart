@@ -18,6 +18,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final picker = ImagePicker();
   UserState userService;
 
+  bool _nameEditing = false;
+
   @override
   void initState() {
     userService = Provider.of<UserState>(context, listen: false);
@@ -136,45 +138,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       SizedBox(height: 15),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Spacer(),
-                          Text(
-                            state.currentUserInfo().fullName,
-                            style: kBlackTitleTextStyle,
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: FloatingActionButton(
-                              onPressed: () {
-                                showMaterialModalBottomSheet(
-                                  expand: true,
-                                  backgroundColor: Colors.white,
-                                  context: context,
-                                  builder: (context, scrollController) => TextField(
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        hintText: "Enter your profile name",
-                                        labelText: 'Profile name'),
-                                    textInputAction: TextInputAction.done,
-                                    onSubmitted: (text) {
-                                      state.updateUserName(text);
-                                      Navigator.pop(context);
-                                    },
+                          SizedBox(width: 48),
+                          !_nameEditing
+                              ? Expanded(
+                                  child: Text(
+                                    state.currentUserInfo().fullName,
+                                    textAlign: TextAlign.center,
+                                    style: kBlackTitleTextStyle,
                                   ),
-                                );
-                              },
-                              heroTag: "EditName",
-                              child: Icon(Icons.edit, color: Colors.black),
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.transparent,
-                              elevation: 0,
-                              splashColor: Color(0xFFA3F7BF),
-                              mini: true,
-                            ),
+                                )
+                              : Expanded(
+                                  child: TextField(
+                                    autofocus: true,
+                                    style: kBlackTitleTextStyle,
+                                    onSubmitted: (text) => setState(() {
+                                      state.updateUserName(text);
+                                      _nameEditing = false;
+                                    }),
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      
+                                      hintText: state.currentUserInfo().fullName,
+                                    ),
+                                    textInputAction: TextInputAction.done,
+                                  ),
+                                ),
+                          FloatingActionButton(
+                            onPressed: () => setState(() => _nameEditing = true),
+                            heroTag: "EditName",
+                            child: Icon(Icons.edit, color: Colors.black),
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.transparent,
+                            elevation: 0,
+                            splashColor: Color(0xFFA3F7BF),
+                            mini: true,
                           ),
                         ],
                       ),
