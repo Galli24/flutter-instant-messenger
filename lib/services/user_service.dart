@@ -1,23 +1,34 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/utils/loader.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class UserState with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   User _user;
+  UserModel _userInfo;
   bool _isLoggedIn = false;
   bool _userInitiatedAction = false;
 
   bool isLoggedIn() => _isLoggedIn;
   User currentUser() => _user;
+  UserModel currentUserInfo() => _userInfo;
 
   void trackUserState() {
     _auth.authStateChanges().listen((User user) {
       if (user != null && _user == null) {
         // Sign in
         _user = user;
+        _getCurrentUserInfo();
         _isLoggedIn = true;
         print('Sign in, user initiated: $_userInitiatedAction');
         if (!_userInitiatedAction)
@@ -27,6 +38,7 @@ class UserState with ChangeNotifier {
       } else if (user == null && _user != null) {
         // Sign out
         _user = null;
+        _userInfo = null;
         _isLoggedIn = false;
         print('Sign out, user initiated: $_userInitiatedAction');
         if (!_userInitiatedAction)
@@ -41,6 +53,26 @@ class UserState with ChangeNotifier {
         print('Token refresh');
       }
     });
+  }
+
+  Future<void> _getCurrentUserInfo() async =>
+      _userInfo = UserModel.fromDocument(await _firestore.collection('users').doc(_user.uid).get());
+
+  Future<bool> uploadProfileImage(PickedFile pickedFile) async {
+    try {
+      String fileExt = pickedFile.path.substring(pickedFile.path.lastIndexOf('.') + 1);
+      Reference ref = _storage.ref('/images/profiles/' + _user.uid + '/' + Uuid().v4() + '.' + fileExt);
+      await ref.putFile(File(pickedFile.path));
+      String url = await ref.getDownloadURL();
+
+      DocumentReference userRef = _firestore.collection('users').doc(_user.uid);
+      userRef.update({'profileImageUrl': url});
+      _userInfo.profileImageUrl = url;
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
   }
 
   Future<String> registerWithEmailAndPassword(
@@ -103,6 +135,7 @@ class UserState with ChangeNotifier {
     showAlertDialog(context);
     await _auth.signOut();
     _user = null;
+    _userInfo = null;
     _isLoggedIn = false;
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
