@@ -150,12 +150,15 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        _filteredContacts[index].fullName,
-                                        style: TextStyle(
-                                          fontFamily: "SourceSansPro",
-                                          fontSize: 24,
-                                          color: Colors.black,
+                                      Expanded(
+                                        child: Text(
+                                          _filteredContacts[index].fullName,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontFamily: "SourceSansPro",
+                                            fontSize: 24,
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       ),
                                     ],

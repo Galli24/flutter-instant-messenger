@@ -119,12 +119,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                userData.fullName,
-                                                style: TextStyle(
-                                                  fontFamily: "SourceSansPro",
-                                                  fontSize: 24,
-                                                  color: Colors.black,
+                                              Expanded(
+                                                child: Text(
+                                                  userData.fullName,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontFamily: "SourceSansPro",
+                                                    fontSize: 24,
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
                                               ),
                                               Padding(
