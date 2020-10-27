@@ -67,6 +67,7 @@ class UserState with ChangeNotifier {
           await users.doc(user.uid).set({
             'firstName': firstName,
             'lastName': lastName,
+            'profileImageUrl': '',
           });
           return result;
         } catch (e) {
