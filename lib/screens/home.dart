@@ -41,10 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state, child) {
             return ListView.builder(
               itemCount: state.history.conversationList.length,
+              padding: const EdgeInsets.only(top: 5),
               itemBuilder: (context, index) => Container(
-                margin: EdgeInsets.all(10),
-                child: FutureBuilder(
-                  future: state.getParticipant(state.history.conversationList[index]),
+                margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: StreamBuilder(
+                  stream: state.getParticipant(state.history.conversationList[index]),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
                     UserModel userData = snapshot.data as UserModel;
