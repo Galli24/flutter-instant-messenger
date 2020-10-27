@@ -255,21 +255,24 @@ class _ConversationScreenState extends State<ConversationScreen> {
             Container(
               child: Row(
                 children: [
-                  RaisedButton(
+                  IconButton(
+                    padding: EdgeInsets.all(0.0),
                     onPressed: () async {
                       FocusScope.of(context).unfocus();
                       PickedFile pickedFile = await _imagePicker.getImage(source: ImageSource.camera);
                       _showPickedFileModal(pickedFile);
                     },
-                    child: Icon(Icons.photo_camera),
+                    iconSize: 25,
+                    icon: Icon(Icons.photo_camera),
                   ),
-                  RaisedButton(
+                  IconButton(
                     onPressed: () async {
                       FocusScope.of(context).unfocus();
                       PickedFile pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
                       _showPickedFileModal(pickedFile);
                     },
-                    child: Icon(Icons.photo),
+                    iconSize: 25,
+                    icon: Icon(Icons.photo),
                   ),
                   Expanded(
                     child: TextField(
