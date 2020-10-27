@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
 import 'package:flutter_instant_messenger/models/user.dart';
@@ -13,14 +14,16 @@ class ContactListScreen extends StatefulWidget {
 
 class _ContactListScreenState extends State<ContactListScreen> {
   ConversationState _convState;
-  List<UserModel> _contacts = new List<UserModel>();
-  List<UserModel> _filteredContacts = new List<UserModel>();
+  List<UserModel> _contacts;
+  List<UserModel> _filteredContacts;
 
   Widget _currentAppBarTitle = new Text('Contacts', style: kBlackTextStyle);
   Icon _currentIcon = new Icon(Icons.search);
 
   @override
   void initState() {
+    _contacts = new List<UserModel>();
+    _filteredContacts = new List<UserModel>();
     _convState = Provider.of<ConversationState>(context, listen: false);
     _getContacts();
     super.initState();
@@ -74,68 +77,97 @@ class _ContactListScreenState extends State<ContactListScreen> {
       body: SafeArea(
         child: ListView.builder(
           itemCount: _filteredContacts.length,
+          padding: const EdgeInsets.only(top: 5),
           itemBuilder: (context, index) => Container(
-            margin: EdgeInsets.all(10),
-            child: Card(
-              color: Color(0xFFA3F7BF),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                ),
-              ),
-              child: InkWell(
-                customBorder: RoundedRectangleBorder(
+            margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+            child: SizedBox(
+              height: 108,
+              child: Card(
+                color: Color(0xFFA3F7BF),
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(20),
                   ),
                 ),
-                onTap: () async {
-                  Conversation convId = await _convState.getConversationWithUser(_filteredContacts[index].id);
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/conversation',
-                    arguments: {'conversation': convId, 'userModel': _filteredContacts[index]},
-                  );
-                },
-                child: Column(
-                  children: <Widget>[
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.account_circle_rounded,
-                            size: 100,
-                            color: Color(0xFF29A19C),
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _filteredContacts[index].fullName,
-                                      style: TextStyle(
-                                        fontFamily: "SourceSansPro",
-                                        fontSize: 24,
-                                        color: Colors.black,
+                child: InkWell(
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  onTap: () async {
+                    Conversation convId = await _convState.getConversationWithUser(_filteredContacts[index].id);
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/conversation',
+                      arguments: {'conversation': convId, 'userModel': _filteredContacts[index]},
+                    );
+                  },
+                  child: Column(
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _filteredContacts[index].profileImageUrl.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: _filteredContacts[index].profileImageUrl,
+                                    imageBuilder: (context, imageProvider) => Padding(
+                                      padding: const EdgeInsets.only(left: 8, top: 5, right: 4),
+                                      child: Container(
+                                        width: 90.0,
+                                        height: 90.0,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                        ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
+                                    placeholder: (context, url) => Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 100,
+                                      color: Color(0xFF29A19C),
+                                    ),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 100,
+                                      color: Color(0xFF29A19C),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 100,
+                                    color: Color(0xFF29A19C),
+                                  ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        _filteredContacts[index].fullName,
+                                        style: TextStyle(
+                                          fontFamily: "SourceSansPro",
+                                          fontSize: 24,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
