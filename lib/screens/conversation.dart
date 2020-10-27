@@ -182,11 +182,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                                 children: [
-                                                  CachedNetworkImage(
-                                                    imageUrl: msg.content,
-                                                    placeholder: (context, url) =>
-                                                        Center(child: CircularProgressIndicator()),
-                                                    errorWidget: (context, url, error) => Icon(Icons.error),
+                                                  ClipRRect(
+                                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: msg.content,
+                                                      placeholder: (context, url) =>
+                                                          Center(child: CircularProgressIndicator()),
+                                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                                    ),
                                                   ),
                                                   Text(
                                                     DateFormat('d MMM - H:mm').format(msg.datetime.toLocal()),
