@@ -125,7 +125,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
             child: FlutterMap(
               options: MapOptions(
                 center: LatLng(double.parse(pos[0]), double.parse(pos[1])),
-                zoom: 15.0,
+                zoom: 14.0,
+                interactive: false
               ),
               layers: [
                 TileLayerOptions(
@@ -253,6 +254,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     },
                     iconSize: 25,
                     icon: Icon(Icons.photo),
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.all(0.0),
+                    onPressed: () async {
+                      FocusScope.of(context).unfocus();
+                      _convService.sendLocationMessageToConversation();
+                    },
+                    iconSize: 25,
+                    icon: Icon(Icons.location_on),
                   ),
                   Expanded(
                     child: TextField(
