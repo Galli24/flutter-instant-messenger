@@ -27,7 +27,7 @@ final TextStyle kBlackTextStyle = TextStyle(
 final TextStyle kBlackTitleTextStyle = TextStyle(
   fontFamily: 'SourceSansPro',
   color: Colors.black,
-  fontSize: 32,
+  fontSize: 20,
   letterSpacing: 2.5,
   fontWeight: FontWeight.bold,
 );
