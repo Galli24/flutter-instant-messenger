@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
@@ -13,7 +14,9 @@ import 'package:uuid/uuid.dart';
 class ConversationState with ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
   final _storage = FirebaseStorage.instance;
+  RemoteConfig config;
 
+  String _gmkey = '';
   String _userUid = '';
   String _participantUid = '';
   Conversation currentConversation;
@@ -21,8 +24,13 @@ class ConversationState with ChangeNotifier {
   History _history = History();
   StreamSubscription<History> _historyTracking;
 
-  set userUid(String uid) => _userUid = uid;
+  set userUid(String uid) {
+    _userUid = uid;
+    _getGmKey();
+  }
+
   set participantUid(String uid) => _participantUid = uid;
+  String get gmkey => _gmkey;
   History get history => _history;
 
   void trackMessageHistory() {
@@ -40,6 +48,13 @@ class ConversationState with ChangeNotifier {
       _historyTracking = null;
       _history = History();
     }
+  }
+
+  void _getGmKey() async {
+    config = await RemoteConfig.instance;
+    await config.fetch(expiration: const Duration(hours: 1));
+    await config.activateFetched();
+    _gmkey = config.getString('gmkey');
   }
 
   Future<List<UserModel>> getContacts() async {

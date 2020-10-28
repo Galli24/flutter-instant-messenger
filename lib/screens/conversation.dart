@@ -5,10 +5,8 @@ import 'package:flutter_instant_messenger/models/user.dart';
 import 'package:flutter_instant_messenger/services/conversation_service.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
 import 'package:flutter_instant_messenger/widgets/image_preview.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:latlong/latlong.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -120,30 +118,15 @@ class _ConversationScreenState extends State<ConversationScreen> {
         List<String> pos = msg.content.split(',');
         return ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          child: Container(
-            height: 200,
-            child: FlutterMap(
-              options: MapOptions(
-                center: LatLng(double.parse(pos[0]), double.parse(pos[1])),
-                zoom: 14.0,
-                interactive: false
-              ),
-              layers: [
-                TileLayerOptions(
-                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", subdomains: ['a', 'b', 'c']),
-                MarkerLayerOptions(
-                  markers: [
-                    Marker(
-                      width: 80.0,
-                      height: 80.0,
-                      point: LatLng(double.parse(pos[0]), double.parse(pos[1])),
-                      builder: (ctx) => Icon(Icons.location_on, color: Colors.red, size: 40),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          child: _convService.gmkey.isNotEmpty
+              ? CachedNetworkImage(
+                  imageUrl:
+                      'https://maps.googleapis.com/maps/api/staticmap?zoom=14&size=400x400&markers=color:red%7C${pos[0]},${pos[1]}&key=${_convService.gmkey}',
+                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      Column(children: [Icon(Icons.error), Text('Failed to retrieve the image')]),
+                )
+              : Column(children: [Icon(Icons.error), Text('Failed to retrieve the image')]),
         );
       default:
         return Text(
