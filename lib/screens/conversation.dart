@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/models/conversation_models.dart';
@@ -74,26 +76,30 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void _showPickedFileModal(PickedFile pickedFile) async {
     if (pickedFile != null) {
       showMaterialModalBottomSheet(
-          expand: false,
-          context: context,
-          backgroundColor: Colors.white,
-          builder: (context, scrollController) => ImagePreview(
-                pickedFile: pickedFile,
-                onPressedAction: () =>
-                    Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(pickedFile),
-              ));
+        expand: false,
+        context: context,
+        backgroundColor: Colors.white,
+        builder: (context, scrollController) => ImagePreview(
+          pickedFile: pickedFile,
+          onPressedAction: () =>
+              Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(pickedFile),
+        ),
+      );
     } else {
-      var lostData = await _retrieveLostImageData();
-      if (lostData is PickedFile) {
-        showMaterialModalBottomSheet(
+      if (Platform.isAndroid) {
+        var lostData = await _retrieveLostImageData();
+        if (lostData is PickedFile) {
+          showMaterialModalBottomSheet(
             expand: false,
             context: context,
             backgroundColor: Colors.white,
             builder: (context, scrollController) => ImagePreview(
-                  pickedFile: lostData,
-                  onPressedAction: () =>
-                      Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(pickedFile),
-                ));
+              pickedFile: lostData,
+              onPressedAction: () =>
+                  Provider.of<ConversationState>(context, listen: false).sendImageMessageToConversation(pickedFile),
+            ),
+          );
+        }
       }
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/services/user_service.dart';
@@ -51,17 +53,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     } else {
-      var lostData = await _retrieveLostImageData();
-      if (lostData is PickedFile) {
-        showMaterialModalBottomSheet(
-          expand: false,
-          context: context,
-          backgroundColor: Colors.white,
-          builder: (context, scrollController) => ImagePreview(
-            pickedFile: lostData,
-            onPressedAction: () => onPressedAction(pickedFile),
-          ),
-        );
+      if (Platform.isAndroid) {
+        var lostData = await _retrieveLostImageData();
+        if (lostData is PickedFile) {
+          showMaterialModalBottomSheet(
+            expand: false,
+            context: context,
+            backgroundColor: Colors.white,
+            builder: (context, scrollController) => ImagePreview(
+              pickedFile: lostData,
+              onPressedAction: () => onPressedAction(pickedFile),
+            ),
+          );
+        }
       }
     }
   }
@@ -161,7 +165,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     textAlign: TextAlign.center,
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      
                                       hintText: state.currentUserInfo().fullName,
                                     ),
                                     textInputAction: TextInputAction.done,
