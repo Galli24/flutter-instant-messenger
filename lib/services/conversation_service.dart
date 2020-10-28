@@ -15,6 +15,7 @@ class ConversationState with ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
   final _storage = FirebaseStorage.instance;
   RemoteConfig config;
+  bool _gotConfigInstance = false;
 
   String _gmkey = '';
   String _userUid = '';
@@ -51,10 +52,13 @@ class ConversationState with ChangeNotifier {
   }
 
   void _getGmKey() async {
-    config = await RemoteConfig.instance;
-    await config.fetch(expiration: const Duration(hours: 1));
-    await config.activateFetched();
-    _gmkey = config.getString('gmkey');
+    if (!_gotConfigInstance && config == null) {
+      _gotConfigInstance = true;
+      config = await RemoteConfig.instance;
+      await config.fetch(expiration: const Duration(hours: 1));
+      await config.activateFetched();
+      _gmkey = config.getString('gmkey');
+    }
   }
 
   Future<List<UserModel>> getContacts() async {
