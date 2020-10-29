@@ -4,6 +4,33 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
+/*
+  Testing classes
+*/
+class RegisterEmailFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Email can\'t be empty' : null;
+  }
+}
+
+class RegisterPasswordFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Password can\'t be empty' : null;
+  }
+}
+
+class RegisterFirstNameFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'First name can\'t be empty' : null;
+  }
+}
+
+class RegisterLastNameFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Last name can\'t be empty' : null;
+  }
+}
+
 class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -58,16 +85,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  TextField(
+                  TextFormField(
                     onChanged: (text) => setState(() => _email = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: "Enter your e-mail",
                         labelText: 'Email'),
+                    validator: RegisterEmailFieldValidator.validate,
                     textInputAction: TextInputAction.next,
                   ),
-                  TextField(
+                  TextFormField(
                     onChanged: (text) => setState(() => _password = text),
                     obscureText: true,
                     decoration: InputDecoration(
@@ -75,26 +103,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: "Enter your password",
                         labelText: 'Password'),
+                    validator: RegisterPasswordFieldValidator.validate,
                     textInputAction: TextInputAction.next,
                   ),
-                  TextField(
+                  TextFormField(
                     onChanged: (text) => setState(() => _firstName = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: "Enter your first name",
                         labelText: 'First name'),
+                    validator: RegisterFirstNameFieldValidator.validate,
                     textInputAction: TextInputAction.next,
                   ),
-                  TextField(
+                  TextFormField(
                     onChanged: (text) => setState(() => _lastName = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
                         hintText: "Enter your last name",
                         labelText: 'Last name'),
+                    validator: RegisterLastNameFieldValidator.validate,
                     textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => _register(),
+                    onFieldSubmitted: (_) => _register(),
                   ),
                   Text(
                     _registerResult,

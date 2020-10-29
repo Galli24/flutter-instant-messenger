@@ -14,6 +14,13 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
+// Message test class
+class MessageFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Message can\'t be empty' : null;
+  }
+}
+
 class ConversationScreen extends StatefulWidget {
   final Map data;
 
@@ -254,7 +261,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     icon: Icon(Icons.location_on),
                   ),
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
                       autocorrect: true,
                       maxLines: 5,
                       minLines: 1,
@@ -268,6 +275,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         _convService.sendTextMessageToConversation(_textEditingController.text);
                         _textEditingController.clear();
                       },
+                      validator: MessageFieldValidator.validate,
                     ),
                   ),
                 ],

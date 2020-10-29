@@ -4,6 +4,18 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
+class LoginEmailFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Email can\'t be empty' : null;
+  }
+}
+
+class LoginPasswordFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Password can\'t be empty' : null;
+  }
+}
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -60,17 +72,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(fontFamily: "SourceSansProItalic", fontSize: 18),
                 ),
                 SizedBox(height: 20),
-                TextField(
+                TextFormField(
                   onChanged: (text) => setState(() => _email = text),
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       //floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintText: "Enter your email",
                       labelText: "Email"),
+                  validator: LoginEmailFieldValidator.validate,
                   textInputAction: TextInputAction.next,
                 ),
                 //SizedBox(height: 20),
-                TextField(
+                TextFormField(
                   onChanged: (text) => setState(() => _password = text),
                   obscureText: true,
                   decoration: InputDecoration(
@@ -79,7 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: "Enter your password",
                       labelText: 'Password'),
                   textInputAction: TextInputAction.done,
-                  onSubmitted: (_) => _signIn(),
+                  validator: LoginPasswordFieldValidator.validate,
+                  onFieldSubmitted: (_) => _signIn(),
                 ),
                 SizedBox(height: 20),
                 TextButton(

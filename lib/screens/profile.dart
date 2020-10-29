@@ -11,6 +11,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../constants.dart';
 
+class UsernameFieldValidator {
+  static String validate(String value) {
+    return value.isEmpty ? 'Username can\'t be empty' : null;
+  }
+}
+
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -155,10 +161,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 )
                               : Expanded(
-                                  child: TextField(
+                                  child: TextFormField(
                                     autofocus: true,
                                     style: kBlackTitleTextStyle,
-                                    onSubmitted: (text) => setState(() {
+                                    onFieldSubmitted: (text) => setState(() {
                                       state.updateUserName(text);
                                       _nameEditing = false;
                                     }),
@@ -167,6 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       border: InputBorder.none,
                                       hintText: state.currentUserInfo().fullName,
                                     ),
+                                    validator: UsernameFieldValidator.validate,
                                     textInputAction: TextInputAction.done,
                                   ),
                                 ),
