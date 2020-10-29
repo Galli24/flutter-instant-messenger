@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_instant_messenger/screens/conversation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
 import 'package:flutter_instant_messenger/screens/register.dart';
 import 'package:flutter_instant_messenger/screens/profile.dart';
-
-import 'package:flutter_instant_messenger/main.dart';
 
 void main() {
   /*
