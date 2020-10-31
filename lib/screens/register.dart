@@ -86,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Column(
                 children: <Widget>[
                   TextFormField(
+                    key: Key("emailField"),
                     onChanged: (text) => setState(() => _email = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
@@ -96,6 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextFormField(
+                    key: Key("passwordField"),
                     onChanged: (text) => setState(() => _password = text),
                     obscureText: true,
                     decoration: InputDecoration(
@@ -107,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextFormField(
+                    key: Key("firstNameField"),
                     onChanged: (text) => setState(() => _firstName = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
@@ -117,6 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextFormField(
+                    key: Key("lastNameField"),
                     onChanged: (text) => setState(() => _lastName = text),
                     decoration: InputDecoration(
                         border: InputBorder.none,
@@ -132,6 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: kErrorTextStyle,
                   ),
                   FlatButton(
+                      key: Key("signupBtn"),
                       onPressed: _register,
                       child: Ink(
                         decoration: BoxDecoration(

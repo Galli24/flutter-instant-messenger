@@ -73,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
+                  key: Key("emailField"),
                   onChanged: (text) => setState(() => _email = text),
                   decoration: InputDecoration(
                       border: InputBorder.none,
@@ -84,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 //SizedBox(height: 20),
                 TextFormField(
+                  key: Key("passwordField"),
                   onChanged: (text) => setState(() => _password = text),
                   obscureText: true,
                   decoration: InputDecoration(
@@ -97,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 20),
                 TextButton(
+                  key: Key("signupBtn"),
                   onPressed: () => Navigator.pushNamed(context, '/register'),
                   child: Text("Sign Up", style: TextStyle(color: Color(0xFF29A19C))),
                 ),
@@ -111,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: InkWell(
+                      key: Key("loginBtn"),
                       onTap: _signIn,
                       customBorder: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(

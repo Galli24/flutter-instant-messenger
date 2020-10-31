@@ -136,6 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   color: Color(0xFF29A19C),
                                 ),
                           Expanded(
+                            key: Key("changePhotoBtn"),
                             child: FloatingActionButton(
                               onPressed: () => _getImage(state.uploadProfileImage),
                               heroTag: "ChangePhoto",
@@ -178,6 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ),
                           FloatingActionButton(
+                            key: Key("changeUsernameBtn"),
                             onPressed: () => setState(() => _nameEditing = true),
                             heroTag: "EditName",
                             child: Icon(Icons.edit, color: Colors.black),
@@ -215,6 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: InkWell(
+                            key: Key("signoutBtn"),
                             onTap: () => Provider.of<UserState>(context, listen: false).signOut(context),
                             customBorder: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
