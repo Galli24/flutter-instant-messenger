@@ -95,6 +95,6 @@ class History {
       if (conv.messageList.isNotEmpty) _conversations.add(conv);
     }
     _conversations.sort((conversation1, conversation2) =>
-        conversation2.messageList.last.datetime.compareTo(conversation1.messageList.last.datetime));
+        conversation2.messageList.first.datetime.compareTo(conversation1.messageList.first.datetime));
   }
 }
