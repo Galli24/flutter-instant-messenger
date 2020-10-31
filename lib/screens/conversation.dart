@@ -134,7 +134,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
           child: _convService.gmkey.isNotEmpty
               ? CachedNetworkImage(
                   imageUrl:
-                      'https://maps.googleapis.com/maps/api/staticmap?zoom=14&size=400x400&markers=color:red%7C${pos[0]},${pos[1]}&key=${_convService.gmkey}',
+                      'https://maps.googleapis.com/maps/api/staticmap?zoom=14&size=2048x2048&markers=color:red%7C${pos[0]},${pos[1]}&key=${_convService.gmkey}',
                   placeholder: (context, url) => Center(child: CircularProgressIndicator()),
                   errorWidget: (context, url, error) =>
                       Column(children: [Icon(Icons.error), Text('Failed to retrieve the image')]),
