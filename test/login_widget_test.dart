@@ -1,10 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
+
+Widget buildTestableWidget(Widget widget) {
+  return MediaQuery(data: MediaQueryData(), child: MaterialApp(home: widget));
+}
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(LoginScreen());
+    await tester.pumpWidget(buildTestableWidget(LoginScreen()));
+    await tester.pumpAndSettle();
 
     final titleFinder = find.text('AeroGrow');
     final subtitleFinder = find.text('Messaging App');
