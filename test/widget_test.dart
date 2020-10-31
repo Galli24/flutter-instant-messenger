@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instant_messenger/screens/profile.dart';
 import 'package:flutter_instant_messenger/screens/register.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_instant_messenger/screens/login.dart';
@@ -66,24 +65,5 @@ void main() {
 
     var signupButton = find.byKey(Key("signupBtn"));
     expect(signupButton, findsOneWidget);
-  });
-
-// Test profile view widgets
-
-  testWidgets('Testing profile widgets', (WidgetTester tester) async {
-    await tester.pumpWidget(buildTestableWidget(ProfileScreen()));
-    await tester.pumpAndSettle();
-
-    final emailFinder = find.text('Email: ');
-    expect(emailFinder, findsOneWidget);
-
-    //var changePhotoButton = find.byKey(Key("changePhotoBtn"));
-    //expect(changePhotoButton, findsOneWidget);
-
-    //var changeUsernameButton = find.byKey(Key("changeUsernameBtn"));
-    //expect(changeUsernameButton, findsOneWidget);
-
-    //var signoutButton = find.byKey(Key("signoutButton"));
-    //expect(signoutButton, findsOneWidget);
   });
 }
